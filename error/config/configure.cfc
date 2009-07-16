@@ -6,11 +6,11 @@
 		<cfset var temp = '' />
 		
 		<!--- Find the datasource --->
-		<cfset datasource = newApplication.singletons.getDatasource() />
+		<cfset datasource = arguments.newapplication.managers.singleton.getDatasource() />
 		
 		<!--- Add an error logging singleton --->
 		<cfset temp = createObject('component', 'plugins.error.inc.service.servErrorLog').init(datasource) />
 		
-		<cfset arguments.newApplication.singletons.setErrorLog(temp) />
+		<cfset arguments.newapplication.managers.singleton.setErrorLog(temp) />
 	</cffunction>
 </cfcomponent>
