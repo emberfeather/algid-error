@@ -12,6 +12,8 @@
 	"navigation": [
 	],
 	"admin": {
-		"title": "Errors"
+		"title": "Errors",
+		"navigation": [
+		]
 	}
 }
