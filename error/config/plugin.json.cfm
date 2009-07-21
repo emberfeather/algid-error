@@ -1,19 +1,12 @@
 {
-	"information": {
-		"key": "error",
-		"title": "Error Management",
-		"i18n": {
-			"locales": "en_US"
-		},
-		"prerequisites": {
-		},
-		"version": "0.1.0"
-	},
-	"navigation": [
-	],
-	"admin": {
-		"title": "Errors",
-		"navigation": [
+	"i18n": {
+		"locales": [
+			"en_PI",
+			"en_US"
 		]
-	}
+	},
+	"key": "error",
+	"prerequisites": {
+	},
+	"version": "0.1.0"
 }
