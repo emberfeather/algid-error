@@ -1,0 +1,11 @@
+<navigation>
+	<errors>
+		<conversations>
+			<list/>
+			<display/>
+		</conversations>
+		<trends>
+			<meta/>
+		</trends>
+	</errors>
+</navigation>
