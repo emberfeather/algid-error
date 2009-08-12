@@ -4,14 +4,18 @@
 		<cfargument name="exception" type="struct" required="true" />
 		<cfargument name="eventName" type="string" required="true" />
 		
-		<cfset var errorLog = '' />
+		<cfset var errorLogger = '' />
 		
 		<!--- Check if we have got far enough for the singletons --->
 		<cfif structKeyExists(application, 'singletons') AND NOT variables.isDebugMode>
-			<cfset errorLog = application.managers.singleton.getErrorLog() />
+			<cfset errorLogger = application.managers.singleton.getErrorLog() />
 			
-			<cfset errorLog.log(argumentCollection = arguments) />
+			<cfset errorLogger.log(argumentCollection = arguments) />
 		<cfelse>
+			<!--- TODO Remove Logging - Just logging here to test error system --->
+			<cfset errorLogger = application.managers.singleton.getErrorLog() />
+			<cfset errorLogger.log(argumentCollection = arguments) />
+			
 			<!--- Dump out the error --->
 			<cfdump var="#arguments.exception#" /><cfabort />
 		</cfif>
