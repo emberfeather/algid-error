@@ -2,13 +2,12 @@
 	<cffunction name="configure" access="public" returntype="void" output="false">
 		<cfargument name="newApplication" type="struct" required="true" />
 		
-		<cfset var datasource = '' />
 		<cfset var temp = '' />
 		
 		<!--- Add an error logging singleton --->
-		<cfset temp = createObject('component', 'plugins.error.inc.service.servErrorLog').init(variables.datasource) />
+		<cfset temp = createObject('component', 'plugins.error.inc.service.servErrorLog').init(variables.datasource, arguments.newApplication.managers.singleton.getI18N()) />
 		
-		<cfset arguments.newapplication.managers.singleton.setErrorLog(temp) />
+		<cfset arguments.newApplication.managers.singleton.setErrorLog(temp) />
 	</cffunction>
 	
 	<cffunction name="update" access="public" returntype="void" output="false">
@@ -75,11 +74,12 @@
 			CREATE TABLE "#variables.datasource.prefix#error".error
 			(
 				"errorID" integer NOT NULL DEFAULT nextval('"#variables.datasource.prefix#error"."error_errorID_seq"'::regclass),
-				"type" character varying(300),
+				"type" character varying(75),
 				message character varying(300),
 				detail character varying(500),
 				code character varying(75),
 				"errorCode" character varying(75),
+				"stackTrace" text,
 				CONSTRAINT "error_PK" PRIMARY KEY ("errorID")
 			)
 			WITH (OIDS=FALSE);
@@ -104,6 +104,7 @@
 				"type" character varying(15),
 				line integer,
 				"column" integer,
+				"id" character varying(25),
 				code character varying(500),
 				CONSTRAINT "trace_PK" PRIMARY KEY ("errorID", "orderBy"),
 				CONSTRAINT "trace_errorID_FK" FOREIGN KEY ("errorID")
@@ -119,6 +120,29 @@
 		
 		<cfquery datasource="#variables.datasource.name#">
 			COMMENT ON TABLE "#variables.datasource.prefix#error".trace IS 'Error Trace Information';
+		</cfquery>
+		
+		<!--- Query Table --->
+		<cfquery datasource="#variables.datasource.name#">
+			CREATE TABLE "#variables.datasource.prefix#error".query
+			(
+				"errorID" integer NOT NULL,
+				datasource character varying(50) NOT NULL,
+				sql text,
+				CONSTRAINT "query_errorID_PK" PRIMARY KEY ("errorID"),
+				CONSTRAINT "query_errorID_FK" FOREIGN KEY ("errorID")
+					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
+					ON UPDATE CASCADE ON DELETE CASCADE
+			)
+			WITH (OIDS=FALSE);
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".query OWNER TO #variables.datasource.owner#;
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			COMMENT ON TABLE "#variables.datasource.prefix#error".query IS 'Query meta data from Errors.';
 		</cfquery>
 	</cffunction>
 </cfcomponent>

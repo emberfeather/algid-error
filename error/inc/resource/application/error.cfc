@@ -8,9 +8,16 @@
 		
 		<!--- Check if we have got far enough for the singletons --->
 		<cfif structKeyExists(application, 'singletons') AND NOT variables.isDebugMode>
-			<cfset errorLogger = application.managers.singleton.getErrorLog() />
-			
-			<cfset errorLogger.log(argumentCollection = arguments) />
+			<cftry>
+				<cfset errorLogger = application.managers.singleton.getErrorLog() />
+				
+				<cfset errorLogger.log(argumentCollection = arguments) />
+				
+				<cfcatch type="any">
+					<!--- Failed to log error, send report of unlogged error --->
+					<!--- TODO Send Unlogged Error --->
+				</cfcatch>
+			</cftry>
 		<cfelse>
 			<!--- TODO Remove Logging - Just logging here to test error system --->
 			<cfset errorLogger = application.managers.singleton.getErrorLog() />
