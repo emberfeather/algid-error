@@ -87,6 +87,8 @@
 	<cffunction name="save" access="public" returntype="void" output="false">
 		<cfargument name="datasource" type="struct" required="true" />
 		
+		<cfset var results = '' />
+		
 		<cfif this.getErrorID() EQ ''>
 			<cfquery datasource="#arguments.datasource.name#">
 				INSERT INTO "#arguments.datasource.prefix#error".error
