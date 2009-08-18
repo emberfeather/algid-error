@@ -1,7 +1,7 @@
 <!--- Adds logging for applications --->
 <cfcomponent output="false">
 	<cffunction name="onError" access="public" returntype="void" output="false">
-		<cfargument name="exception" type="struct" required="true" />
+		<cfargument name="exception" type="any" required="true" />
 		<cfargument name="eventName" type="string" required="true" />
 		
 		<cfset var errorLogger = '' />
@@ -19,10 +19,6 @@
 				</cfcatch>
 			</cftry>
 		<cfelse>
-			<!--- TODO Remove Logging - Just logging here to test error system --->
-			<cfset errorLogger = application.managers.singleton.getErrorLog() />
-			<cfset errorLogger.log(argumentCollection = arguments) />
-			
 			<!--- Dump out the error --->
 			<cfdump var="#arguments.exception#" /><cfabort />
 		</cfif>
