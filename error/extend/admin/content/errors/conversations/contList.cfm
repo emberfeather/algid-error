@@ -1,7 +1,6 @@
 <cfset viewConversation = createObject('component', 'plugins.error.inc.view.viewConversation').init(theURL) />
 
 <cfset filter = {
-		
 	} />
 
 <cfset conversations = servConversation.getConversations( filter ) />
