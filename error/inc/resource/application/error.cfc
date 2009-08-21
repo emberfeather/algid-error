@@ -19,8 +19,8 @@
 				</cfcatch>
 			</cftry>
 		<cfelse>
+			<!--- TODO Remove -- only here to test out error conversations --->
 			<cfset errorLogger = application.managers.singleton.getErrorLog() />
-			
 			<cfset errorLogger.log(argumentCollection = arguments) />
 			
 			<!--- Dump out the error --->
