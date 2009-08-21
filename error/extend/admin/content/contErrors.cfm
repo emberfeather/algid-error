@@ -1,3 +1,5 @@
+<h3>Unreported Errors</h3>
+
 <p>
-	Display some general overview of errors. Maybe frequency, graphs, status, etc.
+	Display the logged errors that have not been reported yet.
 </p>

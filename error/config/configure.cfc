@@ -74,6 +74,7 @@
 			CREATE TABLE "#variables.datasource.prefix#error".error
 			(
 				"errorID" integer NOT NULL DEFAULT nextval('"#variables.datasource.prefix#error"."error_errorID_seq"'::regclass),
+				"loggedOn" timestamp without time zone DEFAULT now(),
 				"type" character varying(75),
 				message character varying(300),
 				detail character varying(500),

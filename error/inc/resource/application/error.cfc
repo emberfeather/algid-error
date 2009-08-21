@@ -19,6 +19,10 @@
 				</cfcatch>
 			</cftry>
 		<cfelse>
+			<cfset errorLogger = application.managers.singleton.getErrorLog() />
+			
+			<cfset errorLogger.log(argumentCollection = arguments) />
+			
 			<!--- Dump out the error --->
 			<cfdump var="#arguments.exception#" /><cfabort />
 		</cfif>
