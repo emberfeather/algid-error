@@ -1,4 +1,4 @@
-<cfcomponent extends="cf-compendium.inc.resource.base.service" output="false">
+<cfcomponent extends="algid.inc.resource.base.service" output="false">
 	<cffunction name="log" access="public" returntype="void" output="false">
 		<cfargument name="exception" type="any" required="true" />
 		<cfargument name="eventName" type="string" required="true" />

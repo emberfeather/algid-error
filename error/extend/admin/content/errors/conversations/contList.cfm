@@ -5,7 +5,7 @@
 
 <cfset conversations = servConversation.getConversations( filter ) />
 
-<cfoutput>#viewConversation.listConversations( conversations )#</cfoutput>
+<cfoutput>#viewConversation.list( conversations, filter )#</cfoutput>
 
 <p>
 	List the conversations starting with the most recent. Separate the

@@ -1,4 +1,4 @@
-<cfcomponent extends="cf-compendium.inc.resource.base.service" output="false">
+<cfcomponent extends="algid.inc.resource.base.service" output="false">
 	<cffunction name="getConversations" access="public" returntype="query" output="false">
 		<cfargument name="filter" type="struct" default="#{}#" />
 		
@@ -13,7 +13,7 @@
 			WHERE 1=1
 			
 			<cfif structKeyExists(arguments.filter, 'isReported')>
-				AND e."isReported" = <cfif arguments.filter.isReported>B'1'<cfelse>B'0'</cfif>
+				AND e."isReported" = B'#(arguments.filter.isReported ? 1 : 0)#'
 			</cfif>
 			
 			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column

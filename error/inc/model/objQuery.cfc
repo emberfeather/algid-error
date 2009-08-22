@@ -1,4 +1,4 @@
-<cfcomponent extends="cf-compendium.inc.resource.base.model" output="false">
+<cfcomponent extends="algid.inc.resource.base.model" output="false">
 	<cffunction name="init" access="public" returntype="component" output="false">
 		<cfargument name="i18n" type="component" required="true" />
 		<cfargument name="locale" type="string" default="en_US" />
