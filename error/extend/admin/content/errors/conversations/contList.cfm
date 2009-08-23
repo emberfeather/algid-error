@@ -3,7 +3,7 @@
 <cfset filter = {
 	} />
 
-<cfset conversations = servConversation.getConversations( filter ) />
+<cfset conversations = servConversation.readConversations( filter ) />
 
 <cfoutput>#viewConversation.list( conversations, filter )#</cfoutput>
 
