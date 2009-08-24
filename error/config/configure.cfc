@@ -81,7 +81,7 @@
 				code character varying(75),
 				"errorCode" character varying(75),
 				"stackTrace" text,
-				"isReported" bit(1) DEFAULT B'0'::"bit",
+				"isReported" boolean NOT NULL DEFAULT false,
 				CONSTRAINT "error_PK" PRIMARY KEY ("errorID")
 			)
 			WITH (OIDS=FALSE);

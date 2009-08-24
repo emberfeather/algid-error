@@ -13,7 +13,7 @@
 			WHERE 1=1
 			
 			<cfif structKeyExists(arguments.filter, 'isReported')>
-				AND e."isReported" = B'#(arguments.filter.isReported ? 1 : 0)#'
+				AND e."isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.filter.isReported#" />
 			</cfif>
 			
 			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column
