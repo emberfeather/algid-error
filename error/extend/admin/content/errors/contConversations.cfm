@@ -1,4 +1,4 @@
-<cfset viewConversation = createObject('component', 'plugins.error.inc.view.viewConversation').init(theURL) />
+<cfset viewConversation = application.managers.transient.getviewConversationForError(theURL) />
 
 <cfset filter = {
 		isReported = 0

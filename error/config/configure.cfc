@@ -5,7 +5,7 @@
 		<cfset var temp = '' />
 		
 		<!--- Add an error logging singleton --->
-		<cfset temp = createObject('component', 'plugins.error.inc.service.servErrorLog').init(variables.datasource, arguments.newApplication.managers.singleton.getI18N()) />
+		<cfset temp = arguments.newApplication.managers.transient.getServErrorLogForError(variables.datasource, arguments.newApplication.managers.singleton.getI18N()) />
 		
 		<cfset arguments.newApplication.managers.singleton.setErrorLog(temp) />
 	</cffunction>
