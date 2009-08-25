@@ -1,7 +1,7 @@
 <navigation>
 	<errors position="main">
 		<conversations position="secondary">
-			<list position="secondary"/>
+			<list position="action"/>
 			<display position="secondary"/>
 		</conversations>
 		<trends position="secondary">
