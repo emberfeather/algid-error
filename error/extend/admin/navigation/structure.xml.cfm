@@ -1,11 +1,11 @@
 <navigation>
 	<errors position="main">
 		<conversations position="secondary">
-			<list position="action"/>
-			<display position="action"/>
+			<list position="secondary"/>
+			<display position="secondary"/>
 		</conversations>
 		<trends position="secondary">
-			<meta position="action"/>
+			<meta position="secondary"/>
 		</trends>
 	</errors>
 </navigation>
