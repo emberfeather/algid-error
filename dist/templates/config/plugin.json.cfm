@@ -19,5 +19,5 @@
 	"prerequisites": {
 		"algid": "@prerequisites.algid@"
 	},
-	"version": "@project.version@"
+	"version": "@project.version.major@.@project.version.minor@.@project.version.build@"
 }
