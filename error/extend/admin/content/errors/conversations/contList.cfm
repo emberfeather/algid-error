@@ -1,4 +1,4 @@
-<cfset viewConversation = application.managers.transient.getViewConversationForError(theURL) />
+<cfset viewConversation = application.factories.transient.getViewConversationForError(theURL) />
 
 <cfset filter = {
 	} />

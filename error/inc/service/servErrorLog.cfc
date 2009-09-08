@@ -13,7 +13,7 @@
 		<cflog application="true" file="errors" text="#arguments.exception.message#|#arguments.exception.detail#" type="error">
 		
 		<cftransaction>
-			<cfset error = application.managers.transient.getModErrorForError(variables.i18n, variables.locale) />
+			<cfset error = application.factories.transient.getModErrorForError(variables.i18n, variables.locale) />
 			
 			<cfset error.setDetail(arguments.exception.detail) />
 			<cfset error.setErrorCode(arguments.exception.errorCode) />
@@ -32,7 +32,7 @@
 			
 			<!--- Save the tag context --->
 			<cfloop array="#arguments.exception.tagContext#" index="context">
-				<cfset trace = application.managers.transient.getModTraceForError(variables.i18n, variables.locale) />
+				<cfset trace = application.factories.transient.getModTraceForError(variables.i18n, variables.locale) />
 				
 				<cfset trace.setErrorID( error.getErrorID() ) />
 				<cfset trace.setOrder( i ) />
@@ -57,7 +57,7 @@
 			
 			<!--- Test if this is an exception with query info --->
 			<cfif structKeyExists(arguments.exception, 'sql')>
-				<cfset query = application.managers.transient.getModQueryForError(variables.i18n, variables.locale) />
+				<cfset query = application.factories.transient.getModQueryForError(variables.i18n, variables.locale) />
 				
 				<cfset query.setErrorID( error.getErrorID() ) />
 				<cfset query.setDatasource( arguments.exception.datasource ) />
