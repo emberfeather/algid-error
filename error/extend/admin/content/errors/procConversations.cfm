@@ -1,1 +1,1 @@
-<cfset servConversation = application.factories.transient.getServConversationForError(application.settings.datasources.update, i18n, SESSION.locale) />
+<cfset servConversation = application.factories.transient.getServConversationForError(application.app.getDSUpdate(), i18n, SESSION.locale) />
