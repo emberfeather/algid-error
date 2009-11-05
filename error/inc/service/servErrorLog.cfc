@@ -13,7 +13,7 @@
 		<!--- Log to the application error log --->
 		<cflog application="true" file="errors" text="#arguments.exception.message#|#arguments.exception.detail#" type="error">
 		
-		<cfset i18n = variables.transport.applicationSingletons.getI18N() />
+		<cfset i18n = variables.transport.theApplication.managers.singleton.getI18N() />
 		
 		<cftransaction>
 			<cfset error = application.factories.transient.getModErrorForError(i18n, variables.transport.locale) />
