@@ -1,14 +1,5 @@
-<cfset viewConversation = application.factories.transient.getViewConversationForError( transport ) />
-
-<cfset filter = {
-	} />
-
 <cfset conversations = servConversation.readConversations( filter ) />
 
-<cfoutput>#viewConversation.list( conversations )#</cfoutput>
+<cfset paginate = variables.transport.theApplication.factories.transient.getPaginate(conversations.recordcount, SESSION.numPerPage, theURL.searchID('onPage')) />
 
-<p>
-	List the conversations starting with the most recent. Separate the
-	ones that have not been sent out as part of the normal notification
-	yet.
-</p>
+<cfoutput>#viewMaster.datagrid(transport, conversations, viewConversation, paginate, filter)#</cfoutput>

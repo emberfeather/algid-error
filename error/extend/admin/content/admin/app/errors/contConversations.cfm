@@ -1,9 +1,4 @@
-<cfset viewConversation = application.factories.transient.getviewConversationForError( transport ) />
-
-<cfset filter = {
-		isReported = 0
-	} />
-
-<cfset conversations = servConversation.readConversations( filter ) />
-
-<cfoutput>#viewConversation.list( conversations )#</cfoutput>
+<p>
+	Give a nice overview of the error conversations. A nice graph of 
+	the number of errors in the past X timeframe would be a nice touch.
+</p>
