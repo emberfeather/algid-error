@@ -3,58 +3,42 @@
 		<cfargument name="i18n" type="component" required="true" />
 		<cfargument name="locale" type="string" default="en_US" />
 		
-		<cfset var attr = '' />
-		
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'errorID'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Code --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'code'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Detail --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'detail'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Error Code --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'errorCode'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Message --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'message'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Stack Trace --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'stackTrace'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Type --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'type'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Set the bundle information for translation --->
 		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'objError') />

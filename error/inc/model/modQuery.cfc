@@ -3,30 +3,22 @@
 		<cfargument name="i18n" type="component" required="true" />
 		<cfargument name="locale" type="string" default="en_US" />
 		
-		<cfset var attr = '' />
-		
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'errorID'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Datasource --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'datasource'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- SQL --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'sql'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Set the bundle information for translation --->
 		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'objQuery') />

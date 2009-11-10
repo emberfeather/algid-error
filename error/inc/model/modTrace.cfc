@@ -3,72 +3,52 @@
 		<cfargument name="i18n" type="component" required="true" />
 		<cfargument name="locale" type="string" default="en_US" />
 		
-		<cfset var attr = '' />
-		
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'errorID'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Code --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'code'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Column --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'column'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Line --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'line'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- ID --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'id'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Order --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'order'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Raw --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'raw'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Template --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'template'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Type --->
-		<cfset attr = {
+		<cfset addAttribute(
 				attribute = 'type'
-			} />
-		
-		<cfset addAttribute(argumentCollection = attr) />
+			) />
 		
 		<!--- Set the bundle information for translation --->
 		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'objTrace') />
