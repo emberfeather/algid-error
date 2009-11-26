@@ -1,5 +1,5 @@
 <cfcomponent extends="algid.inc.resource.plugin.configure" output="false">
-	<cffunction name="configureApplication" access="public" returntype="void" output="false">
+	<cffunction name="onApplicationStart" access="public" returntype="void" output="false">
 		<cfargument name="newApplication" type="struct" required="true" />
 		
 		<cfset var temp = '' />
