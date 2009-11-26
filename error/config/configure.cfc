@@ -1,13 +1,13 @@
 <cfcomponent extends="algid.inc.resource.plugin.configure" output="false">
 	<cffunction name="onApplicationStart" access="public" returntype="void" output="false">
-		<cfargument name="newApplication" type="struct" required="true" />
+		<cfargument name="theApplication" type="struct" required="true" />
 		
 		<cfset var temp = '' />
 		
 		<!--- Add an error logging singleton --->
-		<cfset temp = arguments.newApplication.factories.transient.getServErrorLogForError(variables.datasource, arguments.newApplication.managers.singleton.getI18N()) />
+		<cfset temp = arguments.theApplication.factories.transient.getServErrorLogForError(variables.datasource, arguments.theApplication.managers.singleton.getI18N()) />
 		
-		<cfset arguments.newApplication.managers.singleton.setErrorLog(temp) />
+		<cfset arguments.theApplication.managers.singleton.setErrorLog(temp) />
 	</cffunction>
 	
 	<cffunction name="update" access="public" returntype="void" output="false">
