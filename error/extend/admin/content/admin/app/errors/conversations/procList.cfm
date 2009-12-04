@@ -1,4 +1,4 @@
-<cfset servConversation = application.factories.transient.getServConversationForError(application.app.getDSUpdate(), transport) />
+<cfset servConversation = transport.theApplication.factories.transient.getServConversationForError(application.app.getDSUpdate(), transport) />
 
 <cfif CGI.REQUEST_METHOD EQ 'post'>
 	<!--- Update the URL and redirect --->
