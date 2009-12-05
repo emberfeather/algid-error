@@ -51,7 +51,7 @@
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'objTrace') />
+		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'modTrace') />
 		
 		<cfreturn this />
 	</cffunction>

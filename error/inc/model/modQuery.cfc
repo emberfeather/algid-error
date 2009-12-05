@@ -21,7 +21,7 @@
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'objQuery') />
+		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'modQuery') />
 		
 		<cfreturn this />
 	</cffunction>
