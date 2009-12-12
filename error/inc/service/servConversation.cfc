@@ -9,22 +9,22 @@
 			FROM "#variables.datasource.prefix#error"."error" AS e
 			LEFT JOIN "#variables.datasource.prefix#error"."trace" AS t
 				ON e."errorID" = t."errorID"
-					AND t."orderBy" = 1
+					and t."orderBy" = 1
 			WHERE 1=1
 			
-			<cfif structKeyExists(arguments.filter, 'isReported') AND arguments.filter.isReported NEQ ''>
-				AND e."isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.filter.isReported#" />
+			<cfif structKeyExists(arguments.filter, 'isReported') and arguments.filter.isReported neq ''>
+				and e."isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.filter.isReported#" />
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'search') AND arguments.filter.search NEQ ''>
-				AND (
+			<cfif structKeyExists(arguments.filter, 'search') and arguments.filter.search neq ''>
+				and (
 					"message" LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.filter.search#%" />
-					OR "detail" LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.filter.search#%" />
+					or "detail" LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.filter.search#%" />
 				)
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'timeframe') AND arguments.filter.timeframe NEQ ''>
-				AND "loggedOn" >=
+			<cfif structKeyExists(arguments.filter, 'timeframe') and arguments.filter.timeframe neq ''>
+				and "loggedOn" >=
 				<cfswitch expression="#arguments.filter.timeframe#">
 					<cfcase value="day">
 						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('d', -1, now())#" />
@@ -45,7 +45,7 @@
 			</cfif>
 			
 			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column
-			ORDER BY lastLogged DESC
+			orDER BY lastLogged DESC
 		</cfquery>
 		
 		<cfreturn results />

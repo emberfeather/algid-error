@@ -66,7 +66,7 @@
 			SELECT "errorID", "orderBy", "raw", "template", "type", "line", "column", "id", "code"
 			FROM "#arguments.datasource.prefix#error".trace
 			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.filter.errorID#" />
-				AND orderBy = <cfqueryparam cfsqltype="cf_sql_smallint" value="#arguments.filter.order#" />
+				and orderBy = <cfqueryparam cfsqltype="cf_sql_smallint" value="#arguments.filter.order#" />
 		</cfquery>
 		
 		<cfif results.recordCount>

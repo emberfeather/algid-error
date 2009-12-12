@@ -73,7 +73,7 @@
 		
 		<cfset var results = '' />
 		
-		<cfif this.getErrorID() EQ ''>
+		<cfif this.getErrorID() eq ''>
 			<cfquery datasource="#arguments.datasource.name#">
 				INSERT INTO "#arguments.datasource.prefix#error".error
 				(

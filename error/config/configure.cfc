@@ -17,7 +17,7 @@
 		<cfset var versions = createObject('component', 'algid.inc.resource.utility.version').init() />
 		
 		<!--- fresh => 0.1.0 --->
-		<cfif versions.compareVersions(arguments.installedVersion, '0.1.0') LT 0>
+		<cfif versions.compareVersions(arguments.installedVersion, '0.1.0') lt 0>
 			<!--- Setup the Database --->
 			<cfswitch expression="#variables.datasource.type#">
 				<cfcase value="PostgreSQL">
@@ -42,7 +42,7 @@
 		<!--- Tagger schema --->
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE SCHEMA "#variables.datasource.prefix#error"
-				AUTHORIZATION #variables.datasource.owner#;
+				AUTHorIZATION #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -50,12 +50,12 @@
 		</cfquery>
 		
 		<!---
-			SEQUENCES
+			SeqUENCES
 		--->
 		
 		<!--- Error Sequence --->
 		<cfquery datasource="#variables.datasource.name#">
-			CREATE SEQUENCE "#variables.datasource.prefix#error"."error_errorID_seq"
+			CREATE SeqUENCE "#variables.datasource.prefix#error"."error_errorID_seq"
 				INCREMENT 1
 				MINVALUE 1
 				MAXVALUE 9223372036854775807
@@ -64,7 +64,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			ALTER TABLE "#variables.datasource.prefix#error"."error_errorID_seq" OWNER TO #variables.datasource.owner#;
+			AlteR TABLE "#variables.datasource.prefix#error"."error_errorID_seq" OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<!---
@@ -75,22 +75,22 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".error
 			(
-				"errorID" integer NOT NULL DEFAULT nextval('"#variables.datasource.prefix#error"."error_errorID_seq"'::regclass),
-				"loggedOn" timestamp without time zone DEFAULT now(),
+				"errorID" integer not NULL DEFAUlt nextval('"#variables.datasource.prefix#error"."error_errorID_seq"'::regclass),
+				"loggedOn" timestamp without time zone DEFAUlt now(),
 				"type" character varying(75),
 				message character varying(300),
 				detail character varying(500),
 				code character varying(75),
 				"errorCode" character varying(75),
 				"stackTrace" text,
-				"isReported" boolean NOT NULL DEFAULT false,
+				"isReported" boolean not NULL DEFAUlt false,
 				CONSTRAINT "error_PK" PRIMARY KEY ("errorID")
 			)
 			WITH (OIDS=FALSE);
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			ALTER TABLE "#variables.datasource.prefix#error".error OWNER TO #variables.datasource.owner#;
+			AlteR TABLE "#variables.datasource.prefix#error".error OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -101,8 +101,8 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".trace
 			(
-				"errorID" integer NOT NULL,
-				"orderBy" smallint NOT NULL,
+				"errorID" integer not NULL,
+				"orderBy" smallint not NULL,
 				"raw" character varying(350),
 				"template" character varying(350),
 				"type" character varying(15),
@@ -111,7 +111,7 @@
 				"id" character varying(25),
 				code character varying(500),
 				CONSTRAINT "trace_PK" PRIMARY KEY ("errorID", "orderBy"),
-				CONSTRAINT "trace_errorID_FK" FOREIGN KEY ("errorID")
+				CONSTRAINT "trace_errorID_FK" ForEIGN KEY ("errorID")
 					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
 					ON UPDATE CASCADE ON DELETE CASCADE
 			)
@@ -119,7 +119,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			ALTER TABLE "#variables.datasource.prefix#error".trace OWNER TO #variables.datasource.owner#;
+			AlteR TABLE "#variables.datasource.prefix#error".trace OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -130,11 +130,11 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".query
 			(
-				"errorID" integer NOT NULL,
-				datasource character varying(50) NOT NULL,
+				"errorID" integer not NULL,
+				datasource character varying(50) not NULL,
 				sql text,
 				CONSTRAINT "query_errorID_PK" PRIMARY KEY ("errorID"),
-				CONSTRAINT "query_errorID_FK" FOREIGN KEY ("errorID")
+				CONSTRAINT "query_errorID_FK" ForEIGN KEY ("errorID")
 					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
 					ON UPDATE CASCADE ON DELETE CASCADE
 			)
@@ -142,7 +142,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			ALTER TABLE "#variables.datasource.prefix#error".query OWNER TO #variables.datasource.owner#;
+			AlteR TABLE "#variables.datasource.prefix#error".query OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">

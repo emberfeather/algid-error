@@ -7,7 +7,7 @@
 		<cfset var errorLogger = '' />
 		
 		<!--- Check if we have got far enough for the singletons --->
-		<cfif structKeyExists(variables, 'isDebugMode') AND NOT variables.isDebugMode AND structKeyExists(application, 'managers') AND structKeyExists(application.managers, 'singletons')>
+		<cfif structKeyExists(variables, 'isDebugMode') and not variables.isDebugMode and structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singletons')>
 			<cftry>
 				<cfset errorLogger = application.managers.singleton.getErrorLog() />
 				
