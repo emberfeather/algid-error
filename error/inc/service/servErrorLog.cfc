@@ -16,7 +16,7 @@
 		<cfset i18n = variables.transport.theApplication.managers.singleton.getI18N() />
 		
 		<cftransaction>
-			<cfset error = variables.transport.theApplication.factories.transient.getModErrorForError(i18n, variables.transport.theSession.locale) />
+			<cfset error = variables.transport.theApplication.factories.transient.getModErrorForError(i18n, variables.transport.theSession.managers.singleton.getSession().getLocale()) />
 			
 			<cfset error.setDetail(arguments.exception.detail) />
 			<cfset error.setErrorCode(arguments.exception.errorCode) />
@@ -35,7 +35,7 @@
 			
 			<!--- Save the tag context --->
 			<cfloop array="#arguments.exception.tagContext#" index="context">
-				<cfset trace = variables.transport.theApplication.factories.transient.getModTraceForError(i18n, variables.transport.theSession.locale) />
+				<cfset trace = variables.transport.theApplication.factories.transient.getModTraceForError(i18n, variables.transport.theSession.managers.singleton.getSession().getLocale()) />
 				
 				<cfset trace.setErrorID( error.getErrorID() ) />
 				<cfset trace.setOrder( i ) />
@@ -60,7 +60,7 @@
 			
 			<!--- Test if this is an exception with query info --->
 			<cfif structKeyExists(arguments.exception, 'sql')>
-				<cfset query = variables.transport.theApplication.factories.transient.getModQueryForError(i18n, variables.transport.theSession.locale) />
+				<cfset query = variables.transport.theApplication.factories.transient.getModQueryForError(i18n, variables.transport.theSession.managers.singleton.getSession().getLocale()) />
 				
 				<cfset query.setErrorID( error.getErrorID() ) />
 				<cfset query.setDatasource( arguments.exception.datasource ) />
