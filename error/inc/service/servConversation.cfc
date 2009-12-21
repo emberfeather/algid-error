@@ -45,7 +45,7 @@
 			</cfif>
 			
 			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column
-			orDER BY lastLogged DESC
+			ORDER BY lastLogged DESC
 		</cfquery>
 		
 		<cfreturn results />
