@@ -48,7 +48,6 @@
 	<cffunction name="save" access="public" returntype="void" output="false">
 		<cfargument name="datasource" type="struct" required="true" />
 		
-		<!--- For insert only! --->
 		<cfquery datasource="#arguments.datasource.name#">
 			INSERT INTO "#arguments.datasource.prefix#error".query
 			(
