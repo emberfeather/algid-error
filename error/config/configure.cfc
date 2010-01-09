@@ -50,24 +50,6 @@
 		</cfquery>
 		
 		<!---
-			SeqUENCES
-		--->
-		
-		<!--- Error Sequence --->
-		<cfquery datasource="#variables.datasource.name#">
-			CREATE SeqUENCE "#variables.datasource.prefix#error"."error_errorID_seq"
-				INCREMENT 1
-				MINVALUE 1
-				MAXVALUE 9223372036854775807
-				START 1
-				CACHE 1;
-		</cfquery>
-		
-		<cfquery datasource="#variables.datasource.name#">
-			AlteR TABLE "#variables.datasource.prefix#error"."error_errorID_seq" OWNER TO #variables.datasource.owner#;
-		</cfquery>
-		
-		<!---
 			TABLES
 		--->
 		
@@ -75,7 +57,7 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".error
 			(
-				"errorID" integer not NULL DEFAUlt nextval('"#variables.datasource.prefix#error"."error_errorID_seq"'::regclass),
+				"errorID" uuid NOT NULL,
 				"loggedOn" timestamp without time zone DEFAUlt now(),
 				"type" character varying(75),
 				message character varying(300),
@@ -90,7 +72,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			AlteR TABLE "#variables.datasource.prefix#error".error OWNER TO #variables.datasource.owner#;
+			ALTER TABLE "#variables.datasource.prefix#error".error OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -101,7 +83,7 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".trace
 			(
-				"errorID" integer not NULL,
+				"errorID" uuid NOT NULL,
 				"orderBy" smallint not NULL,
 				"raw" character varying(350),
 				"template" character varying(350),
@@ -119,7 +101,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			AlteR TABLE "#variables.datasource.prefix#error".trace OWNER TO #variables.datasource.owner#;
+			ALTER TABLE "#variables.datasource.prefix#error".trace OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -130,7 +112,7 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE TABLE "#variables.datasource.prefix#error".query
 			(
-				"errorID" integer not NULL,
+				"errorID" uuid NOT NULL,
 				datasource character varying(50) not NULL,
 				sql text,
 				CONSTRAINT "query_errorID_PK" PRIMARY KEY ("errorID"),
@@ -142,7 +124,7 @@
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
-			AlteR TABLE "#variables.datasource.prefix#error".query OWNER TO #variables.datasource.owner#;
+			ALTER TABLE "#variables.datasource.prefix#error".query OWNER TO #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">

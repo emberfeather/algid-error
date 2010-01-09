@@ -35,7 +35,7 @@
 		<cfquery name="results" datasource="#arguments.datasource.name#">
 			SELECT "errorID", "datasource", "sql"
 			FROM "#arguments.datasource.prefix#error".query
-			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.filter.errorID#" />
+			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.filter.errorID#" />::uuid
 		</cfquery>
 		
 		<cfif results.recordCount>
@@ -56,7 +56,7 @@
 				"datasource",
 				"sql"
 			) VALUES (
-				<cfqueryparam cfsqltype="cf_sql_integer" value="#this.getErrorID()#" />,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getDatasource()#" maxlength="50" />,
 				<cfqueryparam cfsqltype="cf_sql_longvarchar" value="#this.getSQL()#" />
 			)

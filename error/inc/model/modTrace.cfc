@@ -65,7 +65,7 @@
 		<cfquery name="results" datasource="#arguments.datasource.name#">
 			SELECT "errorID", "orderBy", "raw", "template", "type", "line", "column", "id", "code"
 			FROM "#arguments.datasource.prefix#error".trace
-			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.filter.errorID#" />
+			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.filter.errorID#" />::uuid
 				and orderBy = <cfqueryparam cfsqltype="cf_sql_smallint" value="#arguments.filter.order#" />
 		</cfquery>
 		
@@ -99,7 +99,7 @@
 				"id",
 				"code"
 			) VALUES (
-				<cfqueryparam cfsqltype="cf_sql_integer" value="#this.getErrorID()#" />,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid,
 				<cfqueryparam cfsqltype="cf_sql_smallint" value="#this.getOrder()#" />,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getRaw()#" maxlength="350" />,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getTemplate()#" maxlength="350" />,

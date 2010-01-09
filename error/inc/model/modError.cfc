@@ -55,7 +55,7 @@
 		<cfquery name="results" datasource="#arguments.datasource.name#">
 			SELECT type, message, detail, code, errorCode, stackTrace
 			FROM "#arguments.datasource.prefix#error".error
-			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.filter.errorID#" />
+			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.filter.errorID#" />::uuid
 		</cfquery>
 		
 		<cfif results.recordCount>
@@ -74,9 +74,13 @@
 		<cfset var results = '' />
 		
 		<cfif this.getErrorID() eq ''>
+			<!--- Create the new ID --->
+			<cfset this.setErrorID( createUUID() ) />
+			
 			<cfquery datasource="#arguments.datasource.name#">
 				INSERT INTO "#arguments.datasource.prefix#error".error
 				(
+					"errorID",
 					type,
 					message,
 					detail,
@@ -84,6 +88,7 @@
 					"errorCode",
 					"stackTrace"
 				) VALUES (
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid,
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getType()#" maxlength="75" />,
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getMessage()#" maxlength="300" />,
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getDetail()#" maxlength="300" />,
@@ -92,14 +97,6 @@
 					<cfqueryparam cfsqltype="cf_sql_longvarchar" value="#this.getStackTrace()#" />
 				)
 			</cfquery>
-			
-			<cfquery name="results" datasource="#arguments.datasource.name#">
-				SELECT MAX("errorID") AS newID
-				FROM "#arguments.datasource.prefix#error".error
-				WHERE message = <cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getMessage()#" maxlength="300" />
-			</cfquery>
-			
-			<cfset this.setErrorID(results.newID) />
 		<cfelse>
 			<cfquery datasource="#arguments.datasource.name#">
 				UPDATE "#arguments.datasource.prefix#error".error
@@ -110,7 +107,7 @@
 					code = <cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getCode()#" maxlength="75" />,
 					errorCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorCode()#" maxlength="75" />,
 					stackTrace = <cfqueryparam cfsqltype="cf_sql_longvarchar" value="#this.getStackTrace()#" />
-				WHERE errorID = <cfqueryparam cfsqltype="cf_sql_integer" value="#this.getErrorID()#" />
+				WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid
 			</cfquery>
 		</cfif>
 	</cffunction>
