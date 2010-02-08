@@ -42,7 +42,7 @@
 		<!--- Tagger schema --->
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE SCHEMA "#variables.datasource.prefix#error"
-				AUTHorIZATION #variables.datasource.owner#;
+				AUTHORIZATION #variables.datasource.owner#;
 		</cfquery>
 		
 		<cfquery datasource="#variables.datasource.name#">
@@ -58,14 +58,14 @@
 			CREATE TABLE "#variables.datasource.prefix#error".error
 			(
 				"errorID" uuid NOT NULL,
-				"loggedOn" timestamp without time zone DEFAUlt now(),
+				"loggedOn" timestamp without time zone DEFAULT now(),
 				"type" character varying(75),
 				message character varying(300),
 				detail character varying(500),
 				code character varying(75),
 				"errorCode" character varying(75),
 				"stackTrace" text,
-				"isReported" boolean not NULL DEFAUlt false,
+				"isReported" boolean not NULL DEFAULT false,
 				CONSTRAINT "error_PK" PRIMARY KEY ("errorID")
 			)
 			WITH (OIDS=FALSE);
@@ -93,7 +93,7 @@
 				"id" character varying(25),
 				code character varying(500),
 				CONSTRAINT "trace_PK" PRIMARY KEY ("errorID", "orderBy"),
-				CONSTRAINT "trace_errorID_FK" ForEIGN KEY ("errorID")
+				CONSTRAINT "trace_errorID_FK" FOREIGN KEY ("errorID")
 					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
 					ON UPDATE CASCADE ON DELETE CASCADE
 			)
@@ -116,7 +116,7 @@
 				datasource character varying(50) not NULL,
 				sql text,
 				CONSTRAINT "query_errorID_PK" PRIMARY KEY ("errorID"),
-				CONSTRAINT "query_errorID_FK" ForEIGN KEY ("errorID")
+				CONSTRAINT "query_errorID_FK" FOREIGN KEY ("errorID")
 					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
 					ON UPDATE CASCADE ON DELETE CASCADE
 			)
