@@ -1,5 +1,5 @@
 <cfcomponent extends="algid.inc.resource.base.service" output="false">
-	<cffunction name="readConversations" access="public" returntype="query" output="false">
+	<cffunction name="getConversations" access="public" returntype="query" output="false">
 		<cfargument name="filter" type="struct" default="#{}#" />
 		
 		<cfset var results = '' />
