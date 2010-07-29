@@ -1,4 +1,4 @@
-<cfset servConversation = transport.theApplication.factories.transient.getServConversationForError(transport.theApplication.managers.singleton.getApplication().getDSUpdate(), transport) />
+<cfset servConversation = services.get('error', 'conversation') />
 
 <cfif cgi.request_method eq 'post'>
 	<!--- Update the URL and redirect --->
