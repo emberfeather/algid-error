@@ -5,8 +5,7 @@
 		"modErrorForError": "plugins.error.inc.model.modError",
 		"modQueryForError": "plugins.error.inc.model.modQuery",
 		"modTraceForError": "plugins.error.inc.model.modTrace",
-		"servErrorLogForError": "plugins.error.inc.service.servErrorLog",
-		"viewConversationForError": "plugins.error.inc.view.viewConversation"
+		"servErrorLogForError": "plugins.error.inc.service.servErrorLog"
 	},
 	"i18n": {
 		"locales": [

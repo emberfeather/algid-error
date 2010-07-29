@@ -1,4 +1,4 @@
-<cfset viewConversation = transport.theApplication.factories.transient.getviewConversationForError( transport ) />
+<cfset viewConversation = views.get('error', 'conversation') />
 
 <cfset filter = {
 		'isReported' = theURL.search('isReported'),
