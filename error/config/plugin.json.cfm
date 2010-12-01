@@ -14,6 +14,7 @@
 		]
 	},
 	"key": "error",
+	"plugin": "Error",
 	"prerequisites": {
 		"algid": "0.1.1"
 	},
