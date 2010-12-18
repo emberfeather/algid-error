@@ -41,7 +41,7 @@
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset setI18NBundle('plugins/error/i18n/inc/model', 'modError') />
+		<cfset addBundle('plugins/error/i18n/inc/model', 'modError') />
 		
 		<cfreturn this />
 	</cffunction>
