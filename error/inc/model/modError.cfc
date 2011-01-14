@@ -59,7 +59,7 @@
 		</cfquery>
 		
 		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID) />
+			<cfset this.setErrorID(results.errorID.toString()) />
 			<cfset this.setMessage(results.message) />
 			<cfset this.setDetail(results.detail) />
 			<cfset this.setCode(results.code) />

@@ -70,7 +70,7 @@
 		</cfquery>
 		
 		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID) />
+			<cfset this.setErrorID(results.errorID.toString()) />
 			<cfset this.setOrder(results.orderBy) />
 			<cfset this.setRaw(results.raw) />
 			<cfset this.setTemplate(results.template) />

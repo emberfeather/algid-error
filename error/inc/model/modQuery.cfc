@@ -39,7 +39,7 @@
 		</cfquery>
 		
 		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID) />
+			<cfset this.setErrorID(results.errorID.toString()) />
 			<cfset this.setDatasource(results.datasource) />
 			<cfset this.setSql(results.sql) />
 		</cfif>
