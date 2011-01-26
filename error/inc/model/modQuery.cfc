@@ -6,22 +6,22 @@
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'errorID'
 			) />
 		
 		<!--- Datasource --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'datasource'
 			) />
 		
 		<!--- SQL --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'sql'
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset addBundle('plugins/error/i18n/inc/model', 'modQuery') />
+		<cfset add__bundle('plugins/error/i18n/inc/model', 'modQuery') />
 		
 		<cfreturn this />
 	</cffunction>
