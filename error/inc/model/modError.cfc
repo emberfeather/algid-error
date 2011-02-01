@@ -6,42 +6,42 @@
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'errorID'
 			) />
 		
 		<!--- Code --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'code'
 			) />
 		
 		<!--- Detail --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'detail'
 			) />
 		
 		<!--- Error Code --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'errorCode'
 			) />
 		
 		<!--- Message --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'message'
 			) />
 		
 		<!--- Stack Trace --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'stackTrace'
 			) />
 		
 		<!--- Type --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'type'
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset addBundle('plugins/error/i18n/inc/model', 'modError') />
+		<cfset add__bundle('plugins/error/i18n/inc/model', 'modError') />
 		
 		<cfreturn this />
 	</cffunction>
@@ -59,7 +59,7 @@
 		</cfquery>
 		
 		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID) />
+			<cfset this.setErrorID(results.errorID.toString()) />
 			<cfset this.setMessage(results.message) />
 			<cfset this.setDetail(results.detail) />
 			<cfset this.setCode(results.code) />

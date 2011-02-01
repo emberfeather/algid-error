@@ -6,52 +6,52 @@
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Error ID --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'errorID'
 			) />
 		
 		<!--- Code --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'code'
 			) />
 		
 		<!--- Column --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'column'
 			) />
 		
 		<!--- Line --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'line'
 			) />
 		
 		<!--- ID --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'id'
 			) />
 		
 		<!--- Order --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'order'
 			) />
 		
 		<!--- Raw --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'raw'
 			) />
 		
 		<!--- Template --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'template'
 			) />
 		
 		<!--- Type --->
-		<cfset addAttribute(
+		<cfset add__attribute(
 				attribute = 'type'
 			) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset addBundle('plugins/error/i18n/inc/model', 'modTrace') />
+		<cfset add__bundle('plugins/error/i18n/inc/model', 'modTrace') />
 		
 		<cfreturn this />
 	</cffunction>
@@ -70,7 +70,7 @@
 		</cfquery>
 		
 		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID) />
+			<cfset this.setErrorID(results.errorID.toString()) />
 			<cfset this.setOrder(results.orderBy) />
 			<cfset this.setRaw(results.raw) />
 			<cfset this.setTemplate(results.template) />
