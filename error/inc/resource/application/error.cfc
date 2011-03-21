@@ -2,7 +2,7 @@
 component {
 	public void function onError(required any exception, required string eventName) {
 		// Check if we have got far enough for the singletons
-		if (structKeyExists(variables, 'isDebugMode') and not variables.isDebugMode and structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singletons')) {
+		if(structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singletons')) {
 			try {
 				local.errorLogger = application.managers.singleton.getErrorLog();
 				
@@ -11,9 +11,12 @@ component {
 				// Failed to log error, send report of unlogged error
 				// TODO Send Unlogged Error
 			}
-		} else {
+		} else if(isDebugMode()) {
 			// Dump out the error
-			writeDump(#arguments.exception#);
+			writeDump(arguments.exception);
+			abort;
+		} else {
+			writeOutput('<h1>Server Error</h1><div>A rogue monkey ninja invaded the server and is causing issues. We are currently unable to catch what damage he is causing.</div>');
 			abort;
 		}
 	}
