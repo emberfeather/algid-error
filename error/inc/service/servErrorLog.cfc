@@ -5,6 +5,10 @@ component extends="algid.inc.resource.base.service" {
 			abort;
 		}
 		
+		local.observer = getPluginObserver('error', 'errorLog');
+		
+		local.observer.beforeLog(argumentCollection = arguments);
+		
 		// Log to the application error log
 		writeLog(application="true", file="errors", text="#arguments.exception.message#|#arguments.exception.detail#", type="error");
 		
@@ -61,5 +65,7 @@ component extends="algid.inc.resource.base.service" {
 				local.query.save(variables.datasource);
 			}
 		}
+		
+		local.observer.afterLog(argumentCollection = arguments);
 	}
 }
