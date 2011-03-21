@@ -1,76 +1,65 @@
-<cfcomponent extends="algid.inc.resource.base.service" output="false">
-	<cffunction name="log" access="public" returntype="void" output="false">
-		<cfargument name="exception" type="any" required="true" />
-		<cfargument name="eventName" type="string" required="true" />
+component extends="algid.inc.resource.base.service" {
+	public void function log(required any exception, string eventName = '') {
+		if(variables.transport.theApplication.managers.singleton.getApplication().isDevelopment()) {
+			writeDump(arguments.exception);
+			abort;
+		}
 		
-		<cfset var error = '' />
-		<cfset var context = '' />
-		<cfset var i = '' />
-		<cfset var i18n = '' />
-		<cfset var locale = '' />
-		<cfset var query = '' />
-		<cfset var trace = '' />
+		// Log to the application error log
+		writeLog(application="true", file="errors", text="#arguments.exception.message#|#arguments.exception.detail#", type="error");
 		
-		<!--- Log to the application error log --->
-		<cflog application="true" file="errors" text="#arguments.exception.message#|#arguments.exception.detail#" type="error">
+		local.i18n = variables.transport.theApplication.managers.singleton.getI18N();
 		
-		<cfset i18n = variables.transport.theApplication.managers.singleton.getI18N() />
-		<cfset locale = variables.transport.theSession.managers.singleton.getSession().getLocale() />
-		
-		<cftransaction>
-			<cfset error = variables.transport.theApplication.factories.transient.getModErrorForError(i18n, locale) />
+		transaction {
+			local.error = variables.transport.theApplication.factories.transient.getModErrorForError(local.i18n);
 			
-			<cfset error.setDetail(arguments.exception.detail) />
-			<cfset error.setErrorCode(arguments.exception.errorCode) />
-			<cfset error.setMessage(arguments.exception.message) />
-			<cfset error.setType(arguments.exception.type) />
-			<cfset error.setStackTrace(arguments.exception.stackTrace) />
+			local.error.setDetail(arguments.exception.detail);
+			local.error.setErrorCode(arguments.exception.errorCode);
+			local.error.setMessage(arguments.exception.message);
+			local.error.setType(arguments.exception.type);
+			local.error.setStackTrace(arguments.exception.stackTrace);
 			
-			<cfif structKeyExists(arguments.exception, 'code')>
-				<cfset error.setCode(arguments.exception.code) />
-			</cfif>
+			if (structKeyExists(arguments.exception, 'code')) {
+				local.error.setCode(arguments.exception.code);
+			}
 			
-			<!--- Save to the DB --->
-			<cfset error.save(variables.datasource) />
+			// Save to the DB
+			local.error.save(variables.datasource);
 			
-			<cfset i = 1 />
+			for(i = 1; i <= arrayLen(arguments.exception.tagContext); i++) {
+				context = arguments.exception.tagContext[i];
+				
+				local.trace = variables.transport.theApplication.factories.transient.getModTraceForError(local.i18n);
+				
+				local.trace.setErrorID( local.error.getErrorID() );
+				local.trace.setOrder( i );
+				
+				local.trace.setColumn( context.column );
+				local.trace.setLine( context.line );
+				local.trace.setId( context.id );
+				local.trace.setRaw( context.raw_trace );
+				local.trace.setTemplate( context.template );
+				local.trace.setType( context.type );
+				
+				if (structKeyExists(context, 'codePrintPlain')) {
+					local.trace.setCode( context.codePrintPlain );
+				}
+				
+				// Save to the DB
+				local.trace.save(variables.datasource);
+			}
 			
-			<!--- Save the tag context --->
-			<cfloop array="#arguments.exception.tagContext#" index="context">
-				<cfset trace = variables.transport.theApplication.factories.transient.getModTraceForError(i18n, locale) />
+			// Test if this is an exception with query info
+			if (structKeyExists(arguments.exception, 'sql')) {
+				local.query = variables.transport.theApplication.factories.transient.getModQueryForError(local.i18n);
 				
-				<cfset trace.setErrorID( error.getErrorID() ) />
-				<cfset trace.setOrder( i ) />
+				local.query.setErrorID( local.error.getErrorID() );
+				local.query.setDatasource( arguments.exception.datasource );
+				local.query.setSql( arguments.exception.sql );
 				
-				<cfset trace.setColumn( context.column ) />
-				<cfset trace.setLine( context.line ) />
-				<cfset trace.setId( context.id ) />
-				<cfset trace.setRaw( context.raw_trace ) />
-				<cfset trace.setTemplate( context.template ) />
-				<cfset trace.setType( context.type ) />
-				
-				<cfif structKeyExists(context, 'codePrintPlain')>
-					<cfset trace.setCode( context.codePrintPlain ) />
-				</cfif>
-				
-				<!--- Save to the DB --->
-				<cfset trace.save(variables.datasource) />
-				
-				<!--- Increment the counter --->
-				<cfset i++ />
-			</cfloop>
-			
-			<!--- Test if this is an exception with query info --->
-			<cfif structKeyExists(arguments.exception, 'sql')>
-				<cfset query = variables.transport.theApplication.factories.transient.getModQueryForError(i18n, locale) />
-				
-				<cfset query.setErrorID( error.getErrorID() ) />
-				<cfset query.setDatasource( arguments.exception.datasource ) />
-				<cfset query.setSql( arguments.exception.sql ) />
-				
-				<!--- Save to the DB --->
-				<cfset query.save(variables.datasource) />
-			</cfif>
-		</cftransaction>
-	</cffunction>
-</cfcomponent>
+				// Save to the DB
+				local.query.save(variables.datasource);
+			}
+		}
+	}
+}
