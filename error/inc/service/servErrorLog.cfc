@@ -1,8 +1,8 @@
 component extends="algid.inc.resource.base.service" {
 	public void function log(required any exception, string eventName = '') {
 		if(variables.transport.theApplication.managers.singleton.getApplication().isDevelopment()) {
-			writeDump(arguments.exception);
-			abort;
+			//writeDump(arguments.exception);
+			//abort;
 		}
 		
 		local.observer = getPluginObserver('error', 'errorLog');
@@ -12,58 +12,145 @@ component extends="algid.inc.resource.base.service" {
 		// Log to the application error log
 		writeLog(application="true", file="errors", text="#arguments.exception.message#|#arguments.exception.detail#", type="error");
 		
-		local.i18n = variables.transport.theApplication.managers.singleton.getI18N();
+		local.traceHash = hash(arguments.exception.stackTrace, 'SHA');
+		
+		local.query = new Query(datasource = variables.datasource.name);
+		
+		local.query.setSql('
+			SELECT "errorID"
+			FROM "#variables.datasource.prefix#error".error
+			WHERE "traceHash" = :tracehash');
+		
+		local.query.addParam(name = 'tracehash', value = local.traceHash, cfsqltype = 'cf_sql_varchar');
+		
+		local.previous = local.query.execute().getResult();
 		
 		transaction {
-			local.error = variables.transport.theApplication.factories.transient.getModErrorForError(local.i18n);
-			
-			local.error.setDetail(arguments.exception.detail);
-			local.error.setErrorCode(arguments.exception.errorCode);
-			local.error.setMessage(arguments.exception.message);
-			local.error.setType(arguments.exception.type);
-			local.error.setStackTrace(arguments.exception.stackTrace);
-			
-			if (structKeyExists(arguments.exception, 'code')) {
-				local.error.setCode(arguments.exception.code);
-			}
-			
-			// Save to the DB
-			local.error.save(variables.datasource);
-			
-			for(i = 1; i <= arrayLen(arguments.exception.tagContext); i++) {
-				context = arguments.exception.tagContext[i];
+			// Determine if this is a new error or more of the same
+			if(local.previous.recordCount) {
+				local.errorID = local.previous.errorID;
+			} else {
+				// Insert as a new error
+				local.errorID = createUUID();
 				
-				local.trace = variables.transport.theApplication.factories.transient.getModTraceForError(local.i18n);
+				local.query = new Query(datasource = variables.datasource.name);
 				
-				local.trace.setErrorID( local.error.getErrorID() );
-				local.trace.setOrder( i );
+				local.query.setSql('
+					INSERT INTO "#variables.datasource.prefix#error".error
+					(
+						"errorID",
+						"type",
+						"message",
+						"detail",
+						"code",
+						"errorCode",
+						"stackTrace",
+						"traceHash"
+					) VALUES (
+						uuid( :errorID ),
+						:type,
+						:message,
+						:detail,
+						:code,
+						:errorCode,
+						:stackTrace,
+						:traceHash
+					) ');
 				
-				local.trace.setColumn( context.column );
-				local.trace.setLine( context.line );
-				local.trace.setId( context.id );
-				local.trace.setRaw( context.raw_trace );
-				local.trace.setTemplate( context.template );
-				local.trace.setType( context.type );
+				local.query.addParam(name = 'errorID', value = local.errorID, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'type', value = arguments.exception.type, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'message', value = arguments.exception.message, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'detail', value = arguments.exception.detail, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'code', value = (structKeyExists(arguments.exception, 'code') ? arguments.exception.code : ''), cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'errorCode', value = arguments.exception.errorCode, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'stackTrace', value = arguments.exception.stackTrace, cfsqltype = 'cf_sql_longvarchar');
+				local.query.addParam(name = 'tracehash', value = local.traceHash, cfsqltype = 'cf_sql_varchar');
 				
-				if (structKeyExists(context, 'codePrintPlain')) {
-					local.trace.setCode( context.codePrintPlain );
+				local.query.execute();
+				
+				for(local.i = 1; local.i <= arrayLen(arguments.exception.tagContext); local.i++) {
+					local.context = arguments.exception.tagContext[local.i];
+					
+					local.query = new Query(datasource = variables.datasource.name);
+					
+					local.query.setSql('
+						INSERT INTO "#variables.datasource.prefix#error".trace
+						(
+							"errorID",
+							"orderBy",
+							"raw",
+							"template",
+							"type",
+							"line",
+							"column",
+							"id",
+							"code"
+						) VALUES (
+							uuid( :errorID ),
+							:orderBy,
+							:raw,
+							:template,
+							:type,
+							:line,
+							:column,
+							:id,
+							:code
+						)');
+					
+					local.query.addParam(name = 'errorID', value = local.errorID, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'orderBy', value = local.i, cfsqltype = 'cf_sql_smallint');
+					local.query.addParam(name = 'raw', value = local.context.raw_trace, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'template', value = local.context.template, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'type', value = local.context.type, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'line', value = local.context.line, cfsqltype = 'cf_sql_integer');
+					local.query.addParam(name = 'column', value = local.context.column, cfsqltype = 'cf_sql_integer');
+					local.query.addParam(name = 'id', value = local.context.id, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'code', value = (structKeyExists(local.context, 'codePrintPlain') ? local.context.codePrintPlain : ''), cfsqltype = 'cf_sql_varchar');
+					
+					local.query.execute();
 				}
 				
-				// Save to the DB
-				local.trace.save(variables.datasource);
+				// Test if this is an exception with query info
+				if (structKeyExists(arguments.exception, 'sql')) {
+					local.query = new Query(datasource = variables.datasource.name);
+					
+					local.query.setSql('
+						INSERT INTO "#variables.datasource.prefix#error".query
+						(
+							"errorID",
+							"datasource",
+							"sql"
+						) VALUES (
+							uuid( :errorID ),
+							:datasource,
+							:sql
+						)');
+					
+					local.query.addParam(name = 'errorID', value = local.errorID, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'datasource', value = arguments.exception.datasource, cfsqltype = 'cf_sql_varchar');
+					local.query.addParam(name = 'sql', value = arguments.exception.sql, cfsqltype = 'cf_sql_longvarchar');
+					
+					local.query.execute();
+				}
 			}
 			
-			// Test if this is an exception with query info
-			if (structKeyExists(arguments.exception, 'sql')) {
-				local.query = variables.transport.theApplication.factories.transient.getModQueryForError(local.i18n);
-				
-				local.query.setErrorID( local.error.getErrorID() );
-				local.query.setDatasource( arguments.exception.datasource );
-				local.query.setSql( arguments.exception.sql );
-				
-				// Save to the DB
-				local.query.save(variables.datasource);
-			}
+			// Add this occurrence to the error
+			local.query = new Query(datasource = variables.datasource.name);
+			
+			local.query.setSql('
+				INSERT INTO "#variables.datasource.prefix#error".occurrence
+				(
+					"occurrenceID",
+					"errorID"
+				) VALUES (
+					uuid( :occurrenceID ),
+					uuid( :errorID )
+				)');
+			
+			local.query.addParam(name = 'occurrenceID', value = createUUID(), cfsqltype = 'cf_sql_varchar');
+			local.query.addParam(name = 'errorID', value = local.errorID, cfsqltype = 'cf_sql_varchar');
+			
+			local.query.execute();
 		}
 		
 		local.observer.afterLog(argumentCollection = arguments);

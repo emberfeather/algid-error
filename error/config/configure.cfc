@@ -154,10 +154,36 @@
 			TABLES
 		--->
 		
-		<!--- Error table --->
+		<!--- Error --->
 		<cfquery datasource="#variables.datasource.name#">
 			ALTER TABLE "#variables.datasource.prefix#error".error
 				ADD COLUMN "traceHash" character varying(40);
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".error
+				DROP COLUMN "loggedOn";
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".error
+				DROP COLUMN "isReported";
+		</cfquery>
+		
+		<!--- Error Occurrence --->
+		<cfquery datasource="#variables.datasource.name#">
+			CREATE TABLE "#variables.datasource.prefix#error".occurrence
+			(
+				"occurrenceID" uuid NOT NULL, 
+				"errorID" uuid NOT NULL, 
+				"loggedOn" timestamp without time zone DEFAULT now(),
+				"isReported" boolean not NULL DEFAULT false,
+				CONSTRAINT "occurrence_PK" PRIMARY KEY ("occurrenceID"),
+				CONSTRAINT "occurrence_errorID_FK" FOREIGN KEY ("errorID")
+					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
+					ON UPDATE CASCADE ON DELETE CASCADE
+			)
+			WITH ( OIDS = FALSE );
 		</cfquery>
 		
 		<!---

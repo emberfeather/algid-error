@@ -10,6 +10,9 @@ component {
 			} catch( any exception ) {
 				// Failed to log error, send report of unlogged error
 				// TODO Send Unlogged Error
+				writeDump('Should probably tell someone about this one...');
+				writeDump(exception);
+				abort;
 			}
 			
 			writeOutput('<h1>500 Server Error</h1><div>A <strong>rogue monkey ninja</strong> invaded the server. The <strong>good news</strong> is that <strong><em>we are tracking him and will catch him soon</em></strong>.</div>');
