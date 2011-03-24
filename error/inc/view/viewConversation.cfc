@@ -64,7 +64,7 @@
 			format = {
 				datetime: {
 					mask: {
-						date: 'm ddd yyyy',
+						date: 'd mmm yyyy',
 						time: 'HH:mm'
 					}
 				}
