@@ -60,7 +60,15 @@
 		
 		<cfset datagrid.addColumn({
 			key = 'lastLogged',
-			label = 'lastLogged'
+			label = 'lastLogged',
+			format = {
+				datetime: {
+					mask: {
+						date: 'm ddd yyyy',
+						time: 'HH:mm'
+					}
+				}
+			}
 		}) />
 		
 		<cfset datagrid.addColumn({
