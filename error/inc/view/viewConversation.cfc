@@ -41,6 +41,15 @@
 		
 		<cfset filter.addFilter('timeframe', options) />
 		
+		<!--- Is Reported --->
+		<cfset options = variables.transport.theApplication.factories.transient.getOptions() />
+		
+		<cfset options.addOption('All', '') />
+		<cfset options.addOption('Reported', 'true') />
+		<cfset options.addOption('Not Reported', 'false') />
+		
+		<cfset filter.addFilter('isReported', options) />
+		
 		<cfreturn filter.toHTML(variables.transport.theRequest.managers.singleton.getURL(), arguments.values) />
 	</cffunction>
 	
