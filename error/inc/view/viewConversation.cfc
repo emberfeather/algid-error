@@ -59,29 +59,29 @@
 		<cfset datagrid.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
 		
 		<cfset datagrid.addColumn({
-				key = 'lastLogged',
-				label = 'lastLogged'
-			}) />
+			key = 'lastLogged',
+			label = 'lastLogged'
+		}) />
 		
 		<cfset datagrid.addColumn({
-				key = 'numErrors',
-				label = 'count'
-			}) />
+			key = 'numErrors',
+			label = 'count'
+		}) />
 		
 		<cfset datagrid.addColumn({
-				key = 'message',
-				label = 'message'
-			}) />
+			key = 'message',
+			label = 'message'
+		}) />
 		
 		<cfset datagrid.addColumn({
-				key = 'detail',
-				label = 'details'
-			}) />
+			key = 'detail',
+			label = 'details'
+		}) />
 		
 		<cfset datagrid.addColumn({
-				key = 'type',
-				label = 'type'
-			}) />
+			key = 'type',
+			label = 'type'
+		}) />
 		
 		<cfreturn datagrid.toHTML( arguments.data, arguments.options ) />
 	</cffunction>
