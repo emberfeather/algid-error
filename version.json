@@ -1,8 +1,8 @@
 {
-	"archive": "http://github.com/emberfeather/algid-error/tarball/0.1.3",
+	"archive": "http://github.com/emberfeather/algid-error/tarball/0.1.5",
 	"key": "error",
 	"releaseNotes": "http://github.com/emberfeather/algid-error/wiki/Release-Notes",
 	"title": "Error",
 	"URL": "http://github.com/emberfeather/algid-error",
-	"version": "0.1.3"
+	"version": "0.1.5"
 }
