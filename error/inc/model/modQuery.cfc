@@ -5,60 +5,24 @@
 		
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
-		<!--- Error ID --->
-		<cfset add__attribute(
-				attribute = 'errorID'
-			) />
-		
-		<!--- Datasource --->
-		<cfset add__attribute(
-				attribute = 'datasource'
-			) />
-		
-		<!--- SQL --->
-		<cfset add__attribute(
-				attribute = 'sql'
-			) />
-		
 		<!--- Set the bundle information for translation --->
 		<cfset add__bundle('plugins/error/i18n/inc/model', 'modQuery') />
 		
+		<!--- Error ID --->
+		<cfset add__attribute(
+			attribute = 'errorID'
+		) />
+		
+		<!--- Datasource --->
+		<cfset add__attribute(
+			attribute = 'datasource'
+		) />
+		
+		<!--- SQL --->
+		<cfset add__attribute(
+			attribute = 'sql'
+		) />
+		
 		<cfreturn this />
-	</cffunction>
-	
-	<cffunction name="load" access="public" returntype="void" output="false">
-		<cfargument name="datasource" type="struct" required="true" />
-		<cfargument name="filter" type="struct" required="true" />
-		
-		<cfset var results = '' />
-		
-		<cfquery name="results" datasource="#arguments.datasource.name#">
-			SELECT "errorID", "datasource", "sql"
-			FROM "#arguments.datasource.prefix#error".query
-			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.filter.errorID#" />::uuid
-		</cfquery>
-		
-		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID.toString()) />
-			<cfset this.setDatasource(results.datasource) />
-			<cfset this.setSql(results.sql) />
-		</cfif>
-	</cffunction>
-	
-	<cffunction name="save" access="public" returntype="void" output="false">
-		<cfargument name="datasource" type="struct" required="true" />
-		
-		<cfquery datasource="#arguments.datasource.name#">
-			INSERT INTO "#arguments.datasource.prefix#error".query
-			(
-				"errorID",
-				"datasource",
-				"sql"
-			) VALUES (
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getDatasource()#" maxlength="50" />,
-				<cfqueryparam cfsqltype="cf_sql_longvarchar" value="#this.getSQL()#" />
-			)
-		</cfquery>
 	</cffunction>
 </cfcomponent>

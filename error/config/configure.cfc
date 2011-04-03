@@ -29,6 +29,20 @@
 				</cfdefaultcase>
 			</cfswitch>
 		</cfif>
+		
+		<!--- => 0.1.5 --->
+		<cfif versions.compareVersions(arguments.installedVersion, '0.1.5') lt 0>
+			<!--- Setup the Database --->
+			<cfswitch expression="#variables.datasource.type#">
+				<cfcase value="PostgreSQL">
+					<cfset postgreSQL0_1_5() />
+				</cfcase>
+				<cfdefaultcase>
+					<!--- TODO Remove this thow when a later version supports more database types  --->
+					<cfthrow message="Database Type Not Supported" detail="The #variables.datasource.type# database type is not currently supported" />
+				</cfdefaultcase>
+			</cfswitch>
+		</cfif>
 	</cffunction>
 	
 	<!---
@@ -39,7 +53,7 @@
 			SCHEMA
 		--->
 		
-		<!--- Tagger schema --->
+		<!--- Error schema --->
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE SCHEMA "#variables.datasource.prefix#error"
 				AUTHORIZATION #variables.datasource.owner#;
@@ -129,6 +143,57 @@
 		
 		<cfquery datasource="#variables.datasource.name#">
 			COMMENT ON TABLE "#variables.datasource.prefix#error".query IS 'Query meta data from Errors.';
+		</cfquery>
+	</cffunction>
+	
+	<!---
+		Configures the database for v0.1.5
+	--->
+	<cffunction name="postgreSQL0_1_5" access="public" returntype="void" output="false">
+		<!---
+			TABLES
+		--->
+		
+		<!--- Error --->
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".error
+				ADD COLUMN "traceHash" character varying(40);
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".error
+				DROP COLUMN "loggedOn";
+		</cfquery>
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error".error
+				DROP COLUMN "isReported";
+		</cfquery>
+		
+		<!--- Error Occurrence --->
+		<cfquery datasource="#variables.datasource.name#">
+			CREATE TABLE "#variables.datasource.prefix#error".occurrence
+			(
+				"occurrenceID" uuid NOT NULL, 
+				"errorID" uuid NOT NULL, 
+				"loggedOn" timestamp without time zone DEFAULT now(),
+				"isReported" boolean not NULL DEFAULT false,
+				CONSTRAINT "occurrence_PK" PRIMARY KEY ("occurrenceID"),
+				CONSTRAINT "occurrence_errorID_FK" FOREIGN KEY ("errorID")
+					REFERENCES "#variables.datasource.prefix#error".error ("errorID") MATCH SIMPLE
+					ON UPDATE CASCADE ON DELETE CASCADE
+			)
+			WITH ( OIDS = FALSE );
+		</cfquery>
+		
+		<!---
+			INDEXES
+		--->
+		
+		<!--- Error table --->
+		<cfquery datasource="#variables.datasource.name#">
+			CREATE INDEX "error_traceHash_index"
+				ON "#variables.datasource.prefix#error".error ("traceHash" ASC NULLS LAST);
 		</cfquery>
 	</cffunction>
 </cfcomponent>

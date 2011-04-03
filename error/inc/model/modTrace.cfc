@@ -7,108 +7,52 @@
 		
 		<!--- Error ID --->
 		<cfset add__attribute(
-				attribute = 'errorID'
-			) />
+			attribute = 'errorID'
+		) />
 		
 		<!--- Code --->
 		<cfset add__attribute(
-				attribute = 'code'
-			) />
+			attribute = 'code'
+		) />
 		
 		<!--- Column --->
 		<cfset add__attribute(
-				attribute = 'column'
-			) />
+			attribute = 'column'
+		) />
 		
 		<!--- Line --->
 		<cfset add__attribute(
-				attribute = 'line'
-			) />
+			attribute = 'line'
+		) />
 		
 		<!--- ID --->
 		<cfset add__attribute(
-				attribute = 'id'
-			) />
+			attribute = 'id'
+		) />
 		
 		<!--- Order --->
 		<cfset add__attribute(
-				attribute = 'order'
-			) />
+			attribute = 'order'
+		) />
 		
 		<!--- Raw --->
 		<cfset add__attribute(
-				attribute = 'raw'
-			) />
+			attribute = 'raw'
+		) />
 		
 		<!--- Template --->
 		<cfset add__attribute(
-				attribute = 'template'
-			) />
+			attribute = 'template'
+		) />
 		
 		<!--- Type --->
 		<cfset add__attribute(
-				attribute = 'type'
-			) />
+			attribute = 'type'
+		) />
 		
 		<!--- Set the bundle information for translation --->
 		<cfset add__bundle('plugins/error/i18n/inc/model', 'modTrace') />
 		
 		<cfreturn this />
-	</cffunction>
-	
-	<cffunction name="load" access="public" returntype="void" output="false">
-		<cfargument name="datasource" type="struct" required="true" />
-		<cfargument name="filter" type="struct" required="true" />
-		
-		<cfset var results = '' />
-		
-		<cfquery name="results" datasource="#arguments.datasource.name#">
-			SELECT "errorID", "orderBy", "raw", "template", "type", "line", "column", "id", "code"
-			FROM "#arguments.datasource.prefix#error".trace
-			WHERE errorID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.filter.errorID#" null="#arguments.filter.errorID eq ''#" />::uuid
-				and orderBy = <cfqueryparam cfsqltype="cf_sql_smallint" value="#arguments.filter.order#" />
-		</cfquery>
-		
-		<cfif results.recordCount>
-			<cfset this.setErrorID(results.errorID.toString()) />
-			<cfset this.setOrder(results.orderBy) />
-			<cfset this.setRaw(results.raw) />
-			<cfset this.setTemplate(results.template) />
-			<cfset this.setType(results.type) />
-			<cfset this.setLine(results.line) />
-			<cfset this.setColumn(results.column) />
-			<cfset this.setID(results.id) />
-			<cfset this.setCode(results.code) />
-		</cfif>
-	</cffunction>
-	
-	<cffunction name="save" access="public" returntype="void" output="false">
-		<cfargument name="datasource" type="struct" required="true" />
-		
-		<!--- For insert only! --->
-		<cfquery datasource="#arguments.datasource.name#">
-			INSERT INTO "#arguments.datasource.prefix#error".trace
-			(
-				"errorID",
-				"orderBy",
-				"raw",
-				"template",
-				"type",
-				"line",
-				"column",
-				"id",
-				"code"
-			) VALUES (
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getErrorID()#" />::uuid,
-				<cfqueryparam cfsqltype="cf_sql_smallint" value="#this.getOrder()#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getRaw()#" maxlength="350" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getTemplate()#" maxlength="350" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getType()#" maxlength="15" />,
-				<cfqueryparam cfsqltype="cf_sql_integer" value="#this.getLine()#" />,
-				<cfqueryparam cfsqltype="cf_sql_integer" value="#this.getColumn()#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getID()#" maxlength="25" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#this.getCode()#" maxlength="500" />
-			)
-		</cfquery>
 	</cffunction>
 </cfcomponent>

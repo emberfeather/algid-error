@@ -1,26 +1,27 @@
-<!--- Adds logging for applications --->
-<cfcomponent output="false">
-	<cffunction name="onError" access="public" returntype="void" output="false">
-		<cfargument name="exception" type="any" required="true" />
-		<cfargument name="eventName" type="string" required="true" />
-		
-		<cfset var errorLogger = '' />
-		
-		<!--- Check if we have got far enough for the singletons --->
-		<cfif structKeyExists(variables, 'isDebugMode') and not variables.isDebugMode and structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singletons')>
-			<cftry>
-				<cfset errorLogger = application.managers.singleton.getErrorLog() />
+// Adds logging for applications
+component {
+	public void function onError(required any exception, required string eventName) {
+		// Check if we have got far enough for the singletons
+		if(structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singleton')) {
+			try {
+				local.errorLogger = application.managers.singleton.getErrorLog();
 				
-				<cfset errorLogger.log(argumentCollection = arguments) />
-				
-				<cfcatch type="any">
-					<!--- Failed to log error, send report of unlogged error --->
-					<!--- TODO Send Unlogged Error --->
-				</cfcatch>
-			</cftry>
-		<cfelse>
-			<!--- Dump out the error --->
-			<cfdump var="#arguments.exception#" /><cfabort />
-		</cfif>
-	</cffunction>
-</cfcomponent>
+				local.errorLogger.log(argumentCollection = arguments);
+			} catch( any exception ) {
+				// Failed to log error, send report of unlogged error
+				// TODO Send Unlogged Error
+				writeDump('Should probably tell someone about this one...');
+				writeDump(exception);
+				abort;
+			}
+			
+			writeOutput('<h1>500 Server Error</h1><div>A <strong>rogue monkey ninja</strong> invaded the server. The <strong>good news</strong> is that <strong><em>we are tracking him and will catch him soon</em></strong>.</div>');
+		} else if(isDebugMode()) {
+			writeOutput('<h1>500 Server Error</h1><div>A <strong>rogue monkey ninja</strong> invaded the server. The <strong>really good news</strong> is that we <strong><em>are better ninjas than him</em></strong>:</div>');
+			
+			writeDump(arguments.exception);
+		} else {
+			writeOutput('<h1>500 Server Error</h1><div>A <strong>rogue monkey ninja</strong> invaded the server. The <strong>bad news</strong> is that we <strong><em>cannot find him</em></strong>.</div>');
+		}
+	}
+}

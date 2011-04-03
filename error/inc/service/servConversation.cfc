@@ -5,26 +5,28 @@
 		<cfset var results = '' />
 		
 		<cfquery name="results" datasource="#variables.datasource.name#">
-			SELECT COUNT(e."errorID") AS numErrors, MAX(e."loggedOn") AS lastLogged, e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column
-			FROM "#variables.datasource.prefix#error"."error" AS e
-			LEFT JOIN "#variables.datasource.prefix#error"."trace" AS t
+			SELECT COUNT(o."occurrenceID") AS numErrors, MAX(o."loggedOn") AS lastLogged, e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
+			FROM "#variables.datasource.prefix#error"."error" e
+			JOIN "#variables.datasource.prefix#error"."occurrence" o
+				ON e."errorID" = o."errorID"
+			JOIN "#variables.datasource.prefix#error"."trace" t
 				ON e."errorID" = t."errorID"
-					and t."orderBy" = 1
+					AND t."orderBy" = 1
 			WHERE 1=1
 			
 			<cfif structKeyExists(arguments.filter, 'isReported') and arguments.filter.isReported neq ''>
-				and e."isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.filter.isReported#" />
+				AND o."isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.filter.isReported#" />
 			</cfif>
 			
 			<cfif structKeyExists(arguments.filter, 'search') and arguments.filter.search neq ''>
-				and (
+				AND (
 					"message" LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.filter.search#%" />
 					or "detail" LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.filter.search#%" />
 				)
 			</cfif>
 			
 			<cfif structKeyExists(arguments.filter, 'timeframe') and arguments.filter.timeframe neq ''>
-				and "loggedOn" >=
+				AND o."loggedOn" >=
 				<cfswitch expression="#arguments.filter.timeframe#">
 					<cfcase value="day">
 						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('d', -1, now())#" />
@@ -44,10 +46,37 @@
 				</cfswitch>
 			</cfif>
 			
-			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", e."isReported", t.template, t.line, t.column
+			<cfif structKeyExists(arguments.filter, 'loggedAfter') and arguments.filter.loggedAfter neq ''>
+				AND o."loggedOn" >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedAfter#" />
+			</cfif>
+			
+			<cfif structKeyExists(arguments.filter, 'loggedBefore') and arguments.filter.loggedBefore neq ''>
+				AND o."loggedOn" <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedBefore#" />
+			</cfif>
+			
+			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
 			ORDER BY lastLogged DESC
 		</cfquery>
 		
 		<cfreturn results />
+	</cffunction>
+	
+	<cffunction name="reportConversations" access="public" returntype="void" output="false">
+		<cfargument name="filter" type="struct" default="#{}#" />
+		
+		<cfquery datasource="#variables.datasource.name#">
+			UPDATE "#variables.datasource.prefix#error"."occurrence"
+			SET "isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="true" />
+			
+			WHERE "isReported" = <cfqueryparam cfsqltype="cf_sql_bit" value="false" />
+			
+			<cfif structKeyExists(arguments.filter, 'loggedAfter') and arguments.filter.loggedAfter neq ''>
+				AND "loggedOn" >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedAfter#" />
+			</cfif>
+			
+			<cfif structKeyExists(arguments.filter, 'loggedBefore') and arguments.filter.loggedBefore neq ''>
+				AND "loggedOn" <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedBefore#" />
+			</cfif>
+		</cfquery>
 	</cffunction>
 </cfcomponent>
