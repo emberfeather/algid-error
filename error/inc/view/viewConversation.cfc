@@ -102,4 +102,29 @@
 		
 		<cfreturn datagrid.toHTML( arguments.data, arguments.options ) />
 	</cffunction>
+	
+	<cffunction name="report" access="public" returntype="string" output="false">
+		<cfargument name="data" type="any" required="true" />
+		<cfargument name="options" type="struct" default="#{}#" />
+		
+		<cfset local.stats = {
+			totalErrors = 0
+		} />
+		
+		<cfloop query="arguments.data">
+			<cfset local.stats.totalErrors += arguments.data.numErrors />
+		</cfloop>
+		
+		<cfsavecontent variable="local.html">
+			<cfoutput>
+				<dl>
+					<dt>Error Statistics</dt>
+					<dd><strong>#local.stats.totalErrors#</strong> total errors</dd>
+					<dd><strong>#arguments.data.recordCount#</strong> distinct errors</dd>
+				</dl>
+			</cfoutput>
+		</cfsavecontent>
+		
+		<cfreturn local.html />
+	</cffunction>
 </cfcomponent>
