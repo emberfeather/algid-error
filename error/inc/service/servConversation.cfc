@@ -46,11 +46,11 @@
 				</cfswitch>
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'loggedAfter') and arguments.filter.loggedAfter neq ''>
+			<cfif structKeyExists(arguments.filter, 'loggedAfter') and isDate(arguments.filter.loggedAfter)>
 				AND o."loggedOn" >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedAfter#" />
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'loggedBefore') and arguments.filter.loggedBefore neq ''>
+			<cfif structKeyExists(arguments.filter, 'loggedBefore') and isDate(arguments.filter.loggedBefore)>
 				AND o."loggedOn" <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedBefore#" />
 			</cfif>
 			
