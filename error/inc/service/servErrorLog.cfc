@@ -1,13 +1,8 @@
 component extends="algid.inc.resource.base.service" {
 	public void function log(required any exception, string eventName = '') {
-		if(variables.transport.theApplication.managers.singleton.getApplication().isDevelopment()) {
-			writeDump(arguments.exception);
-			abort;
-		}
-		
 		local.observer = getPluginObserver('error', 'errorLog');
 		
-		local.observer.beforeLog(argumentCollection = arguments);
+		local.observer.beforeLog(variables.transport, arguments.exception, arguments.eventName);
 		
 		// Log to the application error log
 		writeLog(application="true", file="errors", text="#arguments.exception.message#|#arguments.exception.detail#", type="error");

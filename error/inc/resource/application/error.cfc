@@ -2,9 +2,9 @@
 component {
 	public void function onError(required any exception, required string eventName) {
 		// Check if we have got far enough for the singletons
-		if(structKeyExists(application, 'managers') and structKeyExists(application.managers, 'singleton')) {
+		if(structKeyExists(session, 'managers') and structKeyExists(session.managers, 'singleton')) {
 			try {
-				local.errorLogger = application.managers.singleton.getErrorLog();
+				local.errorLogger = session.managers.singleton.getErrorLog();
 				
 				local.errorLogger.log(argumentCollection = arguments);
 			} catch( any exception ) {
