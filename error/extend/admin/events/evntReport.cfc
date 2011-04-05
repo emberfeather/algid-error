@@ -3,7 +3,8 @@ component extends="algid.inc.resource.base.event" {
 		local.servConversation = getService(arguments.transport, 'error', 'conversation');
 		
 		local.filter = {
-			loggedAfter: dateAdd('s', -1 * arguments.task.getInterval(), now())
+			loggedAfter: dateAdd('s', -1 * arguments.task.getInterval(), now()),
+			loggedBefore: now()
 		};
 		
 		local.recentConversations = local.servConversation.getConversations(local.filter);
@@ -14,8 +15,15 @@ component extends="algid.inc.resource.base.event" {
 			
 			local.section = local.servConversation.getModel('admin', 'reportSection');
 			
+			arguments.options.theUrl.cleanSection();
+			arguments.options.theUrl.setSection('_base', '/admin/app/errors/conversations/list');
+			arguments.options.theUrl.setSection('loggedBefore', local.filter.loggedBefore);
+			arguments.options.theUrl.setSection('loggedAfter', local.filter.loggedAfter);
+			
+			local.link = '<p><a href="' & arguments.options.theUrl.getSection() & '">View error conversations.</a></p>';
+			
 			local.section.setTitle('Errors');
-			local.section.setContent(local.viewConversation.datagrid(local.recentConversations));
+			local.section.setContent(local.viewConversation.report(local.recentConversations) & local.link);
 			
 			report.addSections(local.section);
 			
