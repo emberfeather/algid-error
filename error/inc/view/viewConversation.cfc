@@ -1,4 +1,49 @@
 <cfcomponent extends="algid.inc.resource.base.view" output="false">
+	<cffunction name="datagrid" access="public" returntype="string" output="false">
+		<cfargument name="data" type="any" required="true" />
+		<cfargument name="options" type="struct" default="#{}#" />
+		
+		<cfset var datagrid = '' />
+		<cfset var i18n = '' />
+		
+		<cfset arguments.options.theURL = variables.transport.theRequest.managers.singleton.getURL() />
+		<cfset i18n = variables.transport.theApplication.managers.singleton.getI18N() />
+		<cfset datagrid = variables.transport.theApplication.factories.transient.getDatagrid(i18n, variables.transport.theSession.managers.singleton.getSession().getLocale()) />
+		
+		<!--- Add the resource bundle for the view --->
+		<cfset datagrid.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
+		
+		<cfset datagrid.addColumn({
+			key = 'lastLogged',
+			label = 'lastLogged',
+			format = {
+				datetime: {
+					mask: {
+						date: 'd mmm yyyy',
+						time: 'HH:mm'
+					}
+				}
+			}
+		}) />
+		
+		<cfset datagrid.addColumn({
+			key = 'numErrors',
+			label = 'count'
+		}) />
+		
+		<cfset datagrid.addColumn({
+			key = 'message',
+			label = 'message'
+		}) />
+		
+		<cfset datagrid.addColumn({
+			key = 'type',
+			label = 'type'
+		}) />
+		
+		<cfreturn datagrid.toHTML( arguments.data, arguments.options ) />
+	</cffunction>
+	
 	<cffunction name="filterActive" access="public" returntype="string" output="false">
 		<cfargument name="filter" type="struct" default="#{}#" />
 		
@@ -51,56 +96,6 @@
 		<cfset filter.addFilter('isReported', options) />
 		
 		<cfreturn filter.toHTML(variables.transport.theRequest.managers.singleton.getURL(), arguments.values) />
-	</cffunction>
-	
-	<cffunction name="datagrid" access="public" returntype="string" output="false">
-		<cfargument name="data" type="any" required="true" />
-		<cfargument name="options" type="struct" default="#{}#" />
-		
-		<cfset var datagrid = '' />
-		<cfset var i18n = '' />
-		
-		<cfset arguments.options.theURL = variables.transport.theRequest.managers.singleton.getURL() />
-		<cfset i18n = variables.transport.theApplication.managers.singleton.getI18N() />
-		<cfset datagrid = variables.transport.theApplication.factories.transient.getDatagrid(i18n, variables.transport.theSession.managers.singleton.getSession().getLocale()) />
-		
-		<!--- Add the resource bundle for the view --->
-		<cfset datagrid.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
-		
-		<cfset datagrid.addColumn({
-			key = 'lastLogged',
-			label = 'lastLogged',
-			format = {
-				datetime: {
-					mask: {
-						date: 'd mmm yyyy',
-						time: 'HH:mm'
-					}
-				}
-			}
-		}) />
-		
-		<cfset datagrid.addColumn({
-			key = 'numErrors',
-			label = 'count'
-		}) />
-		
-		<cfset datagrid.addColumn({
-			key = 'message',
-			label = 'message'
-		}) />
-		
-		<cfset datagrid.addColumn({
-			key = 'detail',
-			label = 'details'
-		}) />
-		
-		<cfset datagrid.addColumn({
-			key = 'type',
-			label = 'type'
-		}) />
-		
-		<cfreturn datagrid.toHTML( arguments.data, arguments.options ) />
 	</cffunction>
 	
 	<cffunction name="report" access="public" returntype="string" output="false">
