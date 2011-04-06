@@ -48,6 +48,37 @@
 		<cfreturn datagrid.toHTML( arguments.data, arguments.options ) />
 	</cffunction>
 	
+	<cffunction name="detail" access="public" returntype="string" output="false">
+		<cfargument name="conversation" type="component" required="true" />
+		
+		<cfsavecontent variable="local.html">
+			<cfoutput>
+			</cfoutput>
+		</cfsavecontent>
+		
+		<cfreturn local.html />
+	</cffunction>
+	
+	<cffunction name="detailSide" access="public" returntype="string" output="false">
+		<cfargument name="conversation" type="component" required="true" />
+		
+		<cfset local.occurrences = arguments.conversation.getOccurrences() />
+		
+		<cfsavecontent variable="local.html">
+			<cfoutput>
+				<h3>Recent Occurrences</h3>
+				
+				<ul>
+					<cfloop array="#local.occurrences#" index="local.i">
+						<li class="#(local.i.getIsReported() eq true ? 'reported' : 'unreported')#">#dateFormat(local.i.getLoggedOn(), 'd mmm yyyy')# #timeFormat(local.i.getLoggedOn(), 'HH:mm')#</li>
+					</cfloop>
+				</ul>
+			</cfoutput>
+		</cfsavecontent>
+		
+		<cfreturn local.html />
+	</cffunction>
+	
 	<cffunction name="filterActive" access="public" returntype="string" output="false">
 		<cfargument name="filter" type="struct" default="#{}#" />
 		

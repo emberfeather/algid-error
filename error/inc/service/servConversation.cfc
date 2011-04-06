@@ -17,6 +17,18 @@
 				<cfset local.modelSerial.deserialize(local.results, local.conversation) />
 				
 				<cfquery name="local.results" datasource="#variables.datasource.name#">
+					SELECT q."errorID", q.datasource, q."sql"
+					FROM "#variables.datasource.prefix#error"."query" q
+					WHERE q."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+				</cfquery>
+				
+				<cfset local.query = getModel('error', 'query') />
+				
+				<cfset local.modelSerial.deserialize(local.results, local.query) />
+				
+				<cfset local.conversation.setQuery(local.query) />
+				
+				<cfquery name="local.results" datasource="#variables.datasource.name#">
 					SELECT t."errorID", t.template, t.line, t."column", t."orderBy", t."raw", t."type", t."id", t."code"
 					FROM "#variables.datasource.prefix#error"."trace" t
 					WHERE t."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
@@ -36,20 +48,26 @@
 					<cfset local.trace.setTemplate(local.results.template) />
 					<cfset local.trace.setType(local.results.type) />
 					
-					<cfset local.conversation.addTrace(local.trace) />
+					<cfset local.conversation.addTraces(local.trace) />
 				</cfloop>
 				
 				<cfquery name="local.results" datasource="#variables.datasource.name#">
-					SELECT q."errorID", q.datasource, q."sql"
-					FROM "#variables.datasource.prefix#error"."query" q
-					WHERE q."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+					SELECT "occurrenceID", "errorID", "loggedOn", "isReported"
+					FROM "#variables.datasource.prefix#error"."occurrence"
+					WHERE "errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+					ORDER BY "loggedOn" DESC
 				</cfquery>
 				
-				<cfset local.query = getModel('error', 'query') />
-				
-				<cfset local.modelSerial.deserialize(local.results, local.query) />
-				
-				<cfset local.conversation.setQuery(local.query) />
+				<cfloop query="local.results">
+					<cfset local.occurrence = getModel('error', 'trace') />
+					
+					<cfset local.occurrence.setErrorID(local.results.errorID) />
+					<cfset local.occurrence.setOccurrenceID(local.results.occurrenceID) />
+					<cfset local.occurrence.setLoggedOn(local.results.loggedOn) />
+					<cfset local.occurrence.setIsReported(local.results.isReported) />
+					
+					<cfset local.conversation.addOccurrences(local.occurrence) />
+				</cfloop>
 			</cfif>
 		</cfif>
 		
