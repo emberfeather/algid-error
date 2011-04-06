@@ -56,6 +56,7 @@
 					FROM "#variables.datasource.prefix#error"."occurrence"
 					WHERE "errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
 					ORDER BY "loggedOn" DESC
+					LIMIT 20
 				</cfquery>
 				
 				<cfloop query="local.results">

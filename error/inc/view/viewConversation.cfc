@@ -51,8 +51,42 @@
 	<cffunction name="detail" access="public" returntype="string" output="false">
 		<cfargument name="conversation" type="component" required="true" />
 		
+		<cfset local.i18n = variables.transport.theApplication.managers.singleton.getI18N() />
+		<cfset local.locale = variables.transport.theSession.managers.singleton.getSession().getLocale() />
+		
+		<cfset local.detail = variables.transport.theApplication.factories.transient.getDetail(arguments.conversation, local.i18n, local.locale) />
+		<cfset local.detail.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
+		<cfset local.detail.addBundle('plugins/error/i18n/inc/model', 'modError', 'modTrace') />
+		
+		<cfset local.datagrid = variables.transport.theApplication.factories.transient.getDatagrid(i18n, local.locale) />
+		<cfset local.datagrid.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
+		<cfset local.datagrid.addBundle('plugins/error/i18n/inc/model', 'modError', 'modTrace') />
+		
+		<cfset datagrid.addColumn({
+			key = 'template',
+			label = 'template'
+		}) />
+		
+		<cfset datagrid.addColumn({
+			key = 'line',
+			label = 'line'
+		}) />
+		
+		<cfset datagrid.addColumn({
+			key = 'column',
+			label = 'column'
+		}) />
+		
+		<cfset local.traces = arguments.conversation.getTraces() />
+		
+		<!--- Create a code snippet from the trace information --->
+		<cfset arguments.conversation.setCodeSnippet( arrayLen(local.traces) ? htmlCodeFormat(local.traces[1].getCode()) : '' ) />
+		
 		<cfsavecontent variable="local.html">
 			<cfoutput>
+				#local.detail.display(['type', 'message', 'detail', 'code', 'query.datasource', 'query.sql', 'codeSnippet'])#
+				
+				#local.datagrid.toHtml(local.traces)#
 			</cfoutput>
 		</cfsavecontent>
 		
