@@ -40,6 +40,11 @@
 		
 		<!--- Type --->
 		<cfset add__attribute(
+			attribute = 'traceHash'
+		) />
+		
+		<!--- Type --->
+		<cfset add__attribute(
 			attribute = 'type'
 		) />
 		

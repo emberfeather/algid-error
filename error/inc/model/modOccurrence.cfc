@@ -6,51 +6,26 @@
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
 		<!--- Set the bundle information for translation --->
-		<cfset add__bundle('plugins/error/i18n/inc/model', 'modTrace') />
+		<cfset add__bundle('plugins/error/i18n/inc/model', 'modOccurrence') />
 		
 		<!--- Error ID --->
 		<cfset add__attribute(
 			attribute = 'errorID'
 		) />
 		
-		<!--- Code --->
+		<!--- Is Reported ? --->
 		<cfset add__attribute(
-			attribute = 'code'
+			attribute = 'isReported'
 		) />
 		
-		<!--- Column --->
+		<!--- Logged On --->
 		<cfset add__attribute(
-			attribute = 'column'
+			attribute = 'loggedOn'
 		) />
 		
-		<!--- Line --->
+		<!--- Occurrence ID --->
 		<cfset add__attribute(
-			attribute = 'line'
-		) />
-		
-		<!--- ID --->
-		<cfset add__attribute(
-			attribute = 'id'
-		) />
-		
-		<!--- Order By --->
-		<cfset add__attribute(
-			attribute = 'orderBy'
-		) />
-		
-		<!--- Raw --->
-		<cfset add__attribute(
-			attribute = 'raw'
-		) />
-		
-		<!--- Template --->
-		<cfset add__attribute(
-			attribute = 'template'
-		) />
-		
-		<!--- Type --->
-		<cfset add__attribute(
-			attribute = 'type'
+			attribute = 'occurrenceID'
 		) />
 		
 		<cfreturn this />
