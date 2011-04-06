@@ -5,6 +5,9 @@
 		
 		<cfset super.init(arguments.i18n, arguments.locale) />
 		
+		<!--- Set the bundle information for translation --->
+		<cfset add__bundle('plugins/error/i18n/inc/model', 'modTrace') />
+		
 		<!--- Error ID --->
 		<cfset add__attribute(
 			attribute = 'errorID'
@@ -30,9 +33,9 @@
 			attribute = 'id'
 		) />
 		
-		<!--- Order --->
+		<!--- Order By --->
 		<cfset add__attribute(
-			attribute = 'order'
+			attribute = 'orderBy'
 		) />
 		
 		<!--- Raw --->
@@ -49,9 +52,6 @@
 		<cfset add__attribute(
 			attribute = 'type'
 		) />
-		
-		<!--- Set the bundle information for translation --->
-		<cfset add__bundle('plugins/error/i18n/inc/model', 'modTrace') />
 		
 		<cfreturn this />
 	</cffunction>

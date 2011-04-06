@@ -33,7 +33,11 @@
 		
 		<cfset datagrid.addColumn({
 			key = 'message',
-			label = 'message'
+			label = 'message',
+			link = {
+				'conversation' = 'errorID',
+				'_base' = '/admin/app/errors/conversation'
+			}
 		}) />
 		
 		<cfset datagrid.addColumn({
