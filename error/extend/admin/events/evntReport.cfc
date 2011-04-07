@@ -20,7 +20,7 @@ component extends="algid.inc.resource.base.event" {
 			arguments.options.theUrl.setSection('loggedBefore', local.filter.loggedBefore);
 			arguments.options.theUrl.setSection('loggedAfter', local.filter.loggedAfter);
 			
-			local.link = '<p><a href="' & arguments.options.theUrl.getSection() & '">View error conversations.</a></p>';
+			local.link = '<p><a href="' & arguments.options.theUrl.getSection() & '">View error conversations &##8594;</a></p>';
 			
 			local.section.setTitle('Errors');
 			local.section.setContent(local.viewConversation.report(local.recentConversations) & local.link);
