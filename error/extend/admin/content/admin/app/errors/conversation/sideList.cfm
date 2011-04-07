@@ -2,6 +2,8 @@
 
 <cfset filter = {
 		'isReported' = theURL.search('isReported'),
+		'loggedAfter' = theURL.search('loggedAfter'),
+		'loggedBefore' = theURL.search('loggedBefore'),
 		'search' = theURL.search('search'),
 		'timeframe' = theURL.search('timeframe')
 	} />

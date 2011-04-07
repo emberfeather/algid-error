@@ -1,11 +1,85 @@
 <cfcomponent extends="algid.inc.resource.base.service" output="false">
+	<cffunction name="getConversation" access="public" returntype="component" output="false">
+		<cfargument name="errorID" type="string" required="true" />
+		
+		<cfset local.conversation = getModel('error', 'error') />
+		
+		<cfif arguments.errorID neq ''>
+			<cfquery name="local.results" datasource="#variables.datasource.name#">
+				SELECT e."errorID", e.message, e.detail, e.type, e.code, e."errorCode", e."stackTrace", e."traceHash"
+				FROM "#variables.datasource.prefix#error"."error" e
+				WHERE e."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+			</cfquery>
+			
+			<cfif local.results.recordCount>
+				<cfset local.modelSerial = variables.transport.theApplication.factories.transient.getModelSerial(variables.transport) />
+				
+				<cfset local.modelSerial.deserialize(local.results, local.conversation) />
+				
+				<cfquery name="local.results" datasource="#variables.datasource.name#">
+					SELECT q."errorID", q.datasource, q."sql"
+					FROM "#variables.datasource.prefix#error"."query" q
+					WHERE q."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+				</cfquery>
+				
+				<cfset local.query = getModel('error', 'query') />
+				
+				<cfset local.modelSerial.deserialize(local.results, local.query) />
+				
+				<cfset local.conversation.setQuery(local.query) />
+				
+				<cfquery name="local.results" datasource="#variables.datasource.name#">
+					SELECT t."errorID", t.template, t.line, t."column", t."orderBy", t."raw", t."type", t."id", t."code"
+					FROM "#variables.datasource.prefix#error"."trace" t
+					WHERE t."errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+					ORDER BY t."orderBy" ASC
+				</cfquery>
+				
+				<cfloop query="local.results">
+					<cfset local.trace = getModel('error', 'trace') />
+					
+					<cfset local.trace.setErrorID(local.results.errorID) />
+					<cfset local.trace.setCode(local.results.code) />
+					<cfset local.trace.setColumn(local.results.column) />
+					<cfset local.trace.setLine(local.results.line) />
+					<cfset local.trace.setID(local.results.id) />
+					<cfset local.trace.setOrder(local.results.orderBy) />
+					<cfset local.trace.setRaw(local.results.raw) />
+					<cfset local.trace.setTemplate(local.results.template) />
+					<cfset local.trace.setType(local.results.type) />
+					
+					<cfset local.conversation.addTraces(local.trace) />
+				</cfloop>
+				
+				<cfquery name="local.results" datasource="#variables.datasource.name#">
+					SELECT "occurrenceID", "errorID", "loggedOn", "isReported"
+					FROM "#variables.datasource.prefix#error"."occurrence"
+					WHERE "errorID" = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.errorID#" null="#arguments.errorID eq ''#" />::uuid
+					ORDER BY "loggedOn" DESC
+					LIMIT 20
+				</cfquery>
+				
+				<cfloop query="local.results">
+					<cfset local.occurrence = getModel('error', 'trace') />
+					
+					<cfset local.occurrence.setErrorID(local.results.errorID) />
+					<cfset local.occurrence.setOccurrenceID(local.results.occurrenceID) />
+					<cfset local.occurrence.setLoggedOn(local.results.loggedOn) />
+					<cfset local.occurrence.setIsReported(local.results.isReported) />
+					
+					<cfset local.conversation.addOccurrences(local.occurrence) />
+				</cfloop>
+			</cfif>
+		</cfif>
+		
+		<cfreturn local.conversation />
+	</cffunction>
+	
 	<cffunction name="getConversations" access="public" returntype="query" output="false">
 		<cfargument name="filter" type="struct" default="#{}#" />
 		
-		<cfset var results = '' />
-		
-		<cfquery name="results" datasource="#variables.datasource.name#">
-			SELECT COUNT(o."occurrenceID") AS numErrors, MAX(o."loggedOn") AS lastLogged, e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
+		<cfquery name="local.results" datasource="#variables.datasource.name#">
+			SELECT COUNT(o."occurrenceID") AS numErrors, MAX(o."loggedOn") AS lastLogged, e."errorID", e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
 			FROM "#variables.datasource.prefix#error"."error" e
 			JOIN "#variables.datasource.prefix#error"."occurrence" o
 				ON e."errorID" = o."errorID"
@@ -46,19 +120,19 @@
 				</cfswitch>
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'loggedAfter') and arguments.filter.loggedAfter neq ''>
+			<cfif structKeyExists(arguments.filter, 'loggedAfter') and isDate(arguments.filter.loggedAfter)>
 				AND o."loggedOn" >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedAfter#" />
 			</cfif>
 			
-			<cfif structKeyExists(arguments.filter, 'loggedBefore') and arguments.filter.loggedBefore neq ''>
+			<cfif structKeyExists(arguments.filter, 'loggedBefore') and isDate(arguments.filter.loggedBefore)>
 				AND o."loggedOn" <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.filter.loggedBefore#" />
 			</cfif>
 			
-			GROUP BY e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
+			GROUP BY e."errorID", e.message, e.detail, e.type, e.code, e."errorCode", o."isReported", t.template, t.line, t.column
 			ORDER BY lastLogged DESC
 		</cfquery>
 		
-		<cfreturn results />
+		<cfreturn local.results />
 	</cffunction>
 	
 	<cffunction name="reportConversations" access="public" returntype="void" output="false">
