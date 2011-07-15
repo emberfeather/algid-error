@@ -54,10 +54,6 @@
 		<cfset local.i18n = variables.transport.theApplication.managers.singleton.getI18N() />
 		<cfset local.locale = variables.transport.theSession.managers.singleton.getSession().getLocale() />
 		
-		<cfset local.detail = variables.transport.theApplication.factories.transient.getDetail(arguments.conversation, local.i18n, local.locale) />
-		<cfset local.detail.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
-		<cfset local.detail.addBundle('plugins/error/i18n/inc/model', 'modError', 'modTrace') />
-		
 		<cfset local.datagrid = variables.transport.theApplication.factories.transient.getDatagrid(i18n, local.locale) />
 		<cfset local.datagrid.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
 		<cfset local.datagrid.addBundle('plugins/error/i18n/inc/model', 'modError', 'modTrace') />
@@ -84,7 +80,7 @@
 		
 		<cfsavecontent variable="local.html">
 			<cfoutput>
-				#local.detail.display(['type', 'message', 'detail', 'code', 'query.datasource', 'query.sql', 'codeSnippet'])#
+				#display(arguments.conversation, ['type', 'message', 'detail', 'code', 'query.datasource', 'query.sql', 'codeSnippet'])#
 				
 				#local.datagrid.toHtml(local.traces)#
 			</cfoutput>
@@ -107,6 +103,37 @@
 						<li class="#(local.i.getIsReported() eq true ? 'reported' : 'unreported')#">#dateFormat(local.i.getLoggedOn(), 'd mmm yyyy')# #timeFormat(local.i.getLoggedOn(), 'HH:mm')#</li>
 					</cfloop>
 				</ul>
+			</cfoutput>
+		</cfsavecontent>
+		
+		<cfreturn local.html />
+	</cffunction>
+	
+	<cffunction name="display" access="private" returntype="string" output="false">
+		<cfargument name="conversation" type="component" required="true" />
+		<cfargument name="keys" type="array" required="true" />
+		
+		<cfset local.i18n = variables.transport.theApplication.managers.singleton.getI18N() />
+		<cfset local.locale = variables.transport.theSession.managers.singleton.getSession().getLocale() />
+		
+		<cfset local.label = variables.transport.theApplication.factories.transient.getLabel(local.i18n, local.locale) />
+		<cfset local.introspect = variables.transport.theApplication.factories.transient.getIntrospect(arguments.conversation) />
+		
+		<cfset local.label.addBundle('plugins/error/i18n/inc/view', 'viewConversation') />
+		<cfset local.label.addBundle('plugins/error/i18n/inc/model', 'modError', 'modTrace') />
+		
+		<cfsavecontent variable="local.html">
+			<cfoutput>
+				<dl class="detail">
+					<cfloop array="#arguments.keys#" index="local.i">
+						<cfset local.value = local.introspect.get(local.i) />
+						
+						<cfif local.value neq ''>
+							<dt>#local.label.get(local.i)#</dt>
+							<dd>#local.value#</dd>
+						</cfif>
+					</cfloop>
+				</dl>
 			</cfoutput>
 		</cfsavecontent>
 		
