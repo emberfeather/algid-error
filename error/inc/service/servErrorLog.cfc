@@ -54,8 +54,8 @@ component extends="algid.inc.resource.base.service" {
 				
 				local.query.addParam(name = 'errorID', value = local.errorID, cfsqltype = 'cf_sql_varchar');
 				local.query.addParam(name = 'type', value = arguments.exception.type, cfsqltype = 'cf_sql_varchar');
-				local.query.addParam(name = 'message', value = arguments.exception.message, cfsqltype = 'cf_sql_varchar');
-				local.query.addParam(name = 'detail', value = arguments.exception.detail, cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'message', value = left(arguments.exception.message, 300), cfsqltype = 'cf_sql_varchar');
+				local.query.addParam(name = 'detail', value = left(arguments.exception.detail, 300), cfsqltype = 'cf_sql_varchar');
 				local.query.addParam(name = 'code', value = (structKeyExists(arguments.exception, 'code') ? arguments.exception.code : ''), cfsqltype = 'cf_sql_varchar');
 				local.query.addParam(name = 'errorCode', value = arguments.exception.errorCode, cfsqltype = 'cf_sql_varchar');
 				local.query.addParam(name = 'stackTrace', value = arguments.exception.stackTrace, cfsqltype = 'cf_sql_longvarchar');
