@@ -7,6 +7,7 @@
 		"modTraceForError": "plugins.error.inc.model.modTrace",
 		"servErrorLogForError": "plugins.error.inc.service.servErrorLog"
 	},
+	"email": "",
 	"i18n": {
 		"locales": [
 			"en_PI",
@@ -26,5 +27,5 @@
 	},
 	"sessionTransients": {
 	},
-	"version": "0.1.7"
+	"version": "0.1.8"
 }
