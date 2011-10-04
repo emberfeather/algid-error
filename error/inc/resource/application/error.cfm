@@ -1,5 +1,4 @@
-// Adds logging for applications
-component {
+<cfscript>
 	public void function onError(required any exception, required string eventName) {
 		writeOutput('<h1>Server Error</h1><div>There has been a problem with the server.</div>');
 		
@@ -24,4 +23,4 @@ component {
 			writeOutput('<div>The <strong>bad news</strong> is that we <strong><em>we could not log the error</em></strong>.</div>');
 		}
 	}
-}
+</cfscript>
