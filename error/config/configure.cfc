@@ -44,6 +44,20 @@
 				</cfdefaultcase>
 			</cfswitch>
 		</cfif>
+		
+		<!--- => 0.1.10 --->
+		<cfif versions.compareVersions(arguments.installedVersion, '0.1.10') lt 0>
+			<!--- Setup the Database --->
+			<cfswitch expression="#variables.datasource.type#">
+				<cfcase value="PostgreSQL">
+					<cfset postgreSQL0_1_10() />
+				</cfcase>
+				<cfdefaultcase>
+					<!--- TODO Remove this thow when a later version supports more database types  --->
+					<cfthrow message="Database Type Not Supported" detail="The #variables.datasource.type# database type is not currently supported" />
+				</cfdefaultcase>
+			</cfswitch>
+		</cfif>
 	</cffunction>
 	
 	<!---
@@ -195,6 +209,19 @@
 		<cfquery datasource="#variables.datasource.name#">
 			CREATE INDEX "error_traceHash_index"
 				ON "#variables.datasource.prefix#error".error ("traceHash" ASC NULLS LAST);
+		</cfquery>
+	</cffunction>
+	
+	<!---
+		Configures the database for v0.1.10
+	--->
+	<cffunction name="postgreSQL0_1_10" access="public" returntype="void" output="false">
+		<!---
+			Timestamps
+		--->
+		
+		<cfquery datasource="#variables.datasource.name#">
+			ALTER TABLE "#variables.datasource.prefix#error"."occurrence" ALTER "loggedOn" TYPE timestamp with time zone;
 		</cfquery>
 	</cffunction>
 </cfcomponent>
